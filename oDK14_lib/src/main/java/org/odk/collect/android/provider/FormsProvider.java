@@ -48,7 +48,7 @@ public class FormsProvider extends ContentProvider {
 	private static final String t = "FormsProvider";
 
 	private static final String DATABASE_NAME = "forms.db";
-	private static final int DATABASE_VERSION = 6;	// smap must be greater than 4
+	private static final int DATABASE_VERSION = 7;	// smap must be greater than 4
 	private static final String FORMS_TABLE_NAME = "forms";
 
 	private static HashMap<String, String> sFormsProjectionMap;
@@ -87,6 +87,8 @@ public class FormsProvider extends ContentProvider {
 					+ " text, "
 					+ FormsColumns.PROJECT		// smap
 					+ " text, "					// smap
+                    + FormsColumns.TASKS_ONLY	// smap
+                    + " text, "					// smap
 					+ FormsColumns.SOURCE		// smap
 					+ " text, "					// smap
 					+ FormsColumns.MD5_HASH
@@ -111,7 +113,7 @@ public class FormsProvider extends ContentProvider {
 				db.execSQL("DROP TABLE IF EXISTS " + FORMS_TABLE_NAME);
 				onCreate(db);
 				return;
-			} else {
+			} else if(oldVersion < 6) {
 				Log.w(t, "Upgrading database from version " + oldVersion		// smap
 						+ " to " + newVersion);
 				// adding BASE64_RSA_PUBLIC_KEY and changing type and name of
@@ -251,6 +253,19 @@ public class FormsProvider extends ContentProvider {
 						+ initialVersion + " to " + newVersion
 						+ ", without destroying all the old data");
 			}
+
+            if ( oldVersion < 7 ) {
+                try {
+                    db.execSQL("ALTER TABLE " + FORMS_TABLE_NAME + " ADD COLUMN " +
+                            FormsColumns.TASKS_ONLY + " text;");
+                    db.execSQL("update " + FORMS_TABLE_NAME + " set " +
+                            FormsColumns.TASKS_ONLY + " = 'no';" );
+                }catch(Exception e) {
+                    // Catch errors, its possible the user upgraded then downgraded
+                    Log.w(t, "Error in upgrading to forms database version 7");
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 
@@ -735,7 +750,9 @@ public class FormsProvider extends ContentProvider {
 				FormsColumns.JR_VERSION);
 		sFormsProjectionMap.put(FormsColumns.PROJECT,		// smap
 				FormsColumns.PROJECT);						// smap
-		sFormsProjectionMap.put(FormsColumns.SOURCE,		// smap
+        sFormsProjectionMap.put(FormsColumns.TASKS_ONLY,	// smap
+                FormsColumns.TASKS_ONLY);                   // smap
+        sFormsProjectionMap.put(FormsColumns.SOURCE,		// smap
 				FormsColumns.SOURCE);						// smap
 		sFormsProjectionMap.put(FormsColumns.SUBMISSION_URI,
 				FormsColumns.SUBMISSION_URI);

@@ -620,9 +620,12 @@ public class DownloadTasksTask extends AsyncTask<Void, String, HashMap<String, S
         				form.manifestUrl = serverUrl + "/xformsManifest?key=" + form.ident;
         			}
         			
-        			FormDetails fd = new FormDetails(form.name, form.url, form.manifestUrl, form.ident, formVersionString);
+        			FormDetails fd = new FormDetails(form.name, form.url, form.manifestUrl, form.ident, formVersionString, form.tasks_only);
         			toDownload.add(fd);
-        		}
+        		} else {
+                    // Update form details
+                    mf.updateFormDetails(mfd.id, form.name, form.tasks_only);
+                }
 
         		// Store a hashmap of new forms so we can delete existing forms not in the list
         		String entryHash = form.ident + "_v_" + form.version;

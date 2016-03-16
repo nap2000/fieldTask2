@@ -141,7 +141,7 @@ public class DownloadFormsTask extends
                 // install everything
                 UriResult uriResult = null;
                 try {
-                    uriResult = findExistingOrCreateNewUri(fileResult.getFile(), STFileUtils.getSource(fd.downloadUrl));
+                    uriResult = findExistingOrCreateNewUri(fileResult.getFile(), STFileUtils.getSource(fd.downloadUrl), fd.tasks_only);
                     Log.w(t, "Form uri = " + uriResult.getUri() + ", isNew = " + uriResult.isNew());
 
                     // move the media files in the media folder
@@ -218,7 +218,7 @@ public class DownloadFormsTask extends
      * @return a {@link org.odk.collect.android.tasks.DownloadFormsTask.UriResult} object
      * @throws TaskCancelledException if the user cancels the task during the download.
      */
-    private UriResult findExistingOrCreateNewUri(File formFile, String source) throws TaskCancelledException {		// smap add source as a parameter
+    private UriResult findExistingOrCreateNewUri(File formFile, String source, boolean tasks_only) throws TaskCancelledException {		// smap add source as a parameter
         Cursor cursor = null;
         Uri uri = null;
         String mediaPath;
@@ -259,6 +259,7 @@ public class DownloadFormsTask extends
                 v.put(FormsColumns.JR_VERSION, formInfo.get(FileUtils.VERSION));
                 v.put(FormsColumns.JR_FORM_ID, formInfo.get(FileUtils.FORMID));
                 v.put(FormsColumns.PROJECT, formInfo.get(FileUtils.PROJECT));		// smap
+                v.put(FormsColumns.TASKS_ONLY, tasks_only ? "yes" : "no");		    // smap
                 v.put(FormsColumns.SOURCE, source);									// smap
                 v.put(FormsColumns.SUBMISSION_URI, formInfo.get(FileUtils.SUBMISSIONURI));
                 v.put(FormsColumns.BASE64_RSA_PUBLIC_KEY, formInfo.get(FileUtils.BASE64_RSA_PUBLIC_KEY));

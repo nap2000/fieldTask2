@@ -69,8 +69,9 @@ public class TaskLoader extends AsyncTaskLoader<List<TaskEntry>> {
                 FormsColumns.DISPLAY_NAME};
 
         String sortOrder = FormsColumns.DISPLAY_NAME + " ASC, " + FormsColumns.JR_VERSION + " DESC";
-        String selectClause = FormsColumns.SOURCE + "='" + Utilities.getSource() + "' or " +
-                FormsColumns.SOURCE + " is null";
+        String selectClause = "(" + FormsColumns.SOURCE + "='" + Utilities.getSource() + "' or " +
+                FormsColumns.SOURCE + " is null)" +
+                " and " + FormsColumns.TASKS_ONLY + " = 'no'";
 
 
         final ContentResolver resolver = Collect.getInstance().getContentResolver();
