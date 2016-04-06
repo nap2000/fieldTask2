@@ -23,10 +23,13 @@
     <string name="smap_cannot_reject">غير قادر على رفض المهمة</string>
     <string name="smap_complete_task"> المهام كاملة</string>
     <string name="smap_destination_not_found"> ​​لم يتم تعيين جهة لل مسار</string>
+    <string name="smap_data_collection">Data Collection</string>
     <string name="smap_done"> : القيام به. </string>
     <string name="smap_finding_route">اكتشف</string>
     <string name="smap_found_route">وقد وجد الطريق إلى الوجهة!</string>
     <string name="smap_get_tasks">تحديث قائمة المهام</string>
+    <string name="smap_gps_trail_summary">Record the path taken by the user</string>
+    <string name="smap_menu_settings">Settings</string>
     <string name="smap_missed">: رفضت.</string>
     <string name="smap_no_tasks">No tasks downloaded</string>
     <string name="smap_pending">: معلقة.</string>
@@ -40,4 +43,14 @@
     <string name="smap_taskList">قائمة المهام</string>
     <string name="smap_taskMap">مهمة خريطة</string>
     <string name="smap_zoom_data">التكبير لمهام </string>
+    <string name="smap_project">Project </string>
+    <string name="smap_NFC_not_available">NFC not available</string>
+    <string name="smap_NFC_not_enabled">NFC is not enabled</string>
+    <string name="smap_NFC_is_available">NFC is available</string>
+    <string name="smap_no_tasks_NFC">No tasks are started by NFC tags</string>
+    <string name="smap_no_matching_tasks_NFC">No tasks match this NFC  : %1$s</string>
+    <string name="smap_starting_task_from_NFC">Starting task from NFC  : %1$s</string>
+    <string name="smap_must_start_from_nfc">This task must be started by swiping an NFC</string>
+    <string name="read_only">This task is complete and only its comments can be changed</string>
+
 </resources>

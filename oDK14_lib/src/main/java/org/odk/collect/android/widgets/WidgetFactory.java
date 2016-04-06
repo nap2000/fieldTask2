@@ -105,7 +105,7 @@ public class WidgetFactory {
             		questionWidget = new ImageWebViewWidget(context, fep);
         		} else if(appearance.equals("signature")) {
             		questionWidget = new SignatureWidget(context, fep);
-            	} else if(appearance.equals("annotate")) {
+            	} else if(appearance.contains("annotate")) {    // smap change to contains rather than equals, may have other appearance settings
             		questionWidget = new AnnotateWidget(context, fep);
             	} else if(appearance.equals("draw")) {
             		questionWidget = new DrawWidget(context, fep);
