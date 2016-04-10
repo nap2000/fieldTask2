@@ -10,8 +10,8 @@ android {
         applicationId "org.smap.smapTask.android"
         minSdkVersion 10
         targetSdkVersion 19
-        versionCode 1895
-        versionName "3.13"
+        versionCode 1896
+        versionName "3.13b"
     }
 
     buildTypes {
@@ -38,17 +38,17 @@ android {
     productFlavors {
         standard {
             applicationId "org.smap.smapTask.android"
-            versionName "3.13"
+            versionName "3.13b"
             minSdkVersion 10
             targetSdkVersion 19
         }
         plan {
             applicationId "org.smap.smapTask.android.plan"
-            versionName "3.13-plan"
+            versionName "3.13b-plan"
         }
         kontrolid {
             applicationId "org.smap.smapTask.android.kontrolid"
-            versionName "3.13-kontrolid"
+            versionName "3.13b-kontrolid"
             minSdkVersion 10
             targetSdkVersion 19
         }
