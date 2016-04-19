@@ -1,10 +1,16 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        //mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.14.1'
-        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.1'
+        classpath 'com.android.tools.build:gradle:2.0.0'
+        //classpath 'com.android.tools.build:gradle:2.10'
+        //classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.+'
+        classpath 'com.github.JakeWharton:sdk-manager-plugin:220bf7a88a7072df3ed16dc8466fb144f2817070'
+        //classpath 'com.github.JakeWharton:sdk-manager-plugin:220bf7a88a7072df3ed16dc8466fb144f2817070'
+        //classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.1'
     }
 }
 apply plugin: 'android-sdk-manager'
@@ -17,7 +23,8 @@ allprojects {
     version project.VERSION_NAME
 
     repositories {
-        mavenCentral()
+        jcenter()
+        //mavenCentral()
     }
 
 //    tasks.withType(Compile) {
@@ -223,5 +230,5 @@ afterEvaluate { project ->
     }
 }
 repositories {
-    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }

@@ -27,7 +27,9 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/NOTICE'
     }
 
@@ -57,18 +59,19 @@ android {
 }
 
 repositories {
-    mavenCentral()
+    //mavenCentral()
+    jcenter()
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:23.0.0'
     //compile files('libs/android_maps_lib-1.1.1.jar')
-    compile files('libs/apache-mime4j-0.6.jar')
+    //compile files('libs/apache-mime4j-0.6.jar')
     compile files('libs/gson-2.2.2.jar')
-    compile files('libs/httpmime-4.0.jar')
-    compile files('libs/joda-time-2.0.jar')
-    compile files('libs/regexp-me.jar')
+    //compile files('libs/httpmime-4.0.jar')
+    //compile files('libs/joda-time-2.0.jar')
+    //compile files('libs/regexp-me.jar')
     compile project(':oDK14_lib')
     //compile project(':MapboxAndroidSDK')
     compile project(':playservices')

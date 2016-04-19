@@ -19,6 +19,7 @@ android {
 
     packagingOptions {
         exclude 'libs/kxml2-2.3.0.jar'
+        exclude 'META-INF/DEPENDENCIES'
     }
 
     lintOptions {

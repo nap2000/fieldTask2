@@ -77,7 +77,11 @@ public class WidgetFactory {
                         questionWidget = new GeoPointWidget(context, fep);
                         break;
                     case Constants.DATATYPE_BARCODE:
-                        questionWidget = new BarcodeWidget(context, fep);
+                        if (appearance.contains("read_nfc")) {
+                            questionWidget = new NfcWidget(context, fep);
+                        } else {
+                            questionWidget = new BarcodeWidget(context, fep);
+                        }
                         break;
                     case Constants.DATATYPE_TEXT:
                     	String query = fep.getQuestion().getAdditionalAttribute(null, "query");
