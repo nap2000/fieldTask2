@@ -114,6 +114,8 @@ public class MainTabsActivity extends TabActivity implements
 	public NdefReaderTask mReadNFC;
     public ArrayList<NfcTrigger> nfcTriggersList;   // nfcTriggers (geofence should have separate list)
     public ArrayList<NfcTrigger> nfcTriggersMap;    // nfcTriggers (geofence should have separate list)
+    public PendingIntent mNfcPendingIntent;
+    public IntentFilter[] mNfcFilters;
 
     private String mProgressMsg;
     private String mAlertMsg;
@@ -209,6 +211,20 @@ public class MainTabsActivity extends TabActivity implements
                     getString(R.string.smap_NFC_not_enabled),
                     Toast.LENGTH_SHORT).show();
         } else {
+            /*
+             * Set up NFC adapter
+             */
+
+            // Pending intent
+            Intent nfcIntent = new Intent(getApplicationContext(), getClass());
+            nfcIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            mNfcPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, nfcIntent, 0);
+
+            // Filter
+            IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+            mNfcFilters = new IntentFilter[] {
+                    filter
+            };
 
 
             Toast.makeText(
@@ -217,7 +233,6 @@ public class MainTabsActivity extends TabActivity implements
                     Toast.LENGTH_SHORT).show();
 
         }
-
     }
 	
 	private TextView getTextViewChild(ViewGroup viewGroup) {
@@ -598,7 +613,7 @@ public class MainTabsActivity extends TabActivity implements
 
 		super.onResume();
 
-        if(mNfcAdapter != null) {
+        if(mNfcAdapter != null && mNfcAdapter.isEnabled()) {
             setupNFCDispatch(this, mNfcAdapter);        // NFC
         }
 
@@ -630,34 +645,14 @@ public class MainTabsActivity extends TabActivity implements
 	 * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
 	 * @param adapter The {@link NfcAdapter} used for the foreground dispatch.
 	 */
-	public static void setupNFCDispatch(final Activity activity, NfcAdapter adapter) {
+	public void setupNFCDispatch(final Activity activity, NfcAdapter adapter) {
 
         if (settings == null) {
             settings = PreferenceManager.getDefaultSharedPreferences(activity);
         }
 
         if (settings.getBoolean(PreferencesActivity.KEY_STORE_LOCATION_TRIGGER, true)) {
-            final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-            final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
-
-            IntentFilter[] filters = new IntentFilter[1];
-            String[][] techList = new String[][]{};
-
-            // Notice that this is the same filter as in our manifest.
-            filters[0] = new IntentFilter();
-            filters[0].addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
-            filters[0].addCategory(Intent.CATEGORY_DEFAULT);
-            try {
-                filters[0].addDataType("text/plain");
-            } catch (IntentFilter.MalformedMimeTypeException e) {
-                throw new RuntimeException("Check your mime type.");
-            }
-
-
-            //adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
-            adapter.enableForegroundDispatch(activity, pendingIntent, null, null);
+            adapter.enableForegroundDispatch(activity, mNfcPendingIntent, mNfcFilters, null);
         }
 	}
 
