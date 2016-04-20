@@ -15,9 +15,12 @@
 package org.odk.collect.android.widgets;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NfcAdapter;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -42,8 +45,11 @@ import org.odk.collect.android.application.Collect;
  * Based on BarcodeWidget by Yaw Anokwa (yanokwa@gmail.com)
  */
 public class NfcWidget extends QuestionWidget implements IBinaryWidget {
-	private Button mGetBarcodeButton;
+	private Button mGetNfcButton;
 	private TextView mStringAnswer;
+    private NfcAdapter mNfcAdapter;
+    public PendingIntent mNfcPendingIntent;
+    public IntentFilter[] mNfcFilters;
 
 	public NfcWidget(Context context, FormEntryPrompt prompt) {
 		super(context, prompt);
@@ -53,29 +59,62 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 		params.setMargins(7, 5, 7, 5);
 
 		// set button formatting
-		mGetBarcodeButton = new Button(getContext());
-		mGetBarcodeButton.setId(QuestionWidget.newUniqueId());
-		mGetBarcodeButton.setText(getContext().getString(R.string.smap_read_nfc));
-		mGetBarcodeButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+		mGetNfcButton = new Button(getContext());
+		mGetNfcButton.setId(QuestionWidget.newUniqueId());
+		mGetNfcButton.setText(getContext().getString(R.string.smap_read_nfc));
+		mGetNfcButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
 				mAnswerFontsize);
-		mGetBarcodeButton.setPadding(20, 20, 20, 20);
-		mGetBarcodeButton.setEnabled(!prompt.isReadOnly());
-		mGetBarcodeButton.setLayoutParams(params);
+		mGetNfcButton.setPadding(20, 20, 20, 20);
+		mGetNfcButton.setEnabled(!prompt.isReadOnly());
+		mGetNfcButton.setLayoutParams(params);
 
 		// launch nfc capture intent on click  TODO code from here on needs changing for NFC
-		mGetBarcodeButton.setOnClickListener(new OnClickListener() {
+		mGetNfcButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Collect.getInstance()
 						.getActivityLogger()
 						.logInstanceAction(this, "recordNfc", "click",
 								mPrompt.getIndex());
-				Intent i = new Intent("com.google.zxing.client.android.SCAN");
-				try {
+
+                // Set up the
+                mNfcAdapter = NfcAdapter.getDefaultAdapter(getContext());
+
+                if (mNfcAdapter == null) {
+                    Toast.makeText(
+                            getContext(),
+                            getContext().getString(R.string.smap_NFC_not_available),
+                            Toast.LENGTH_SHORT).show();
+                } else if (!mNfcAdapter.isEnabled()) {
+                    Toast.makeText(
+                            getContext(),
+                            getContext().getString(R.string.smap_NFC_not_enabled),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+
+                    /*
+                     * Set up NFC adapter
+                     */
+
+                    // Pending intent
+                    Intent nfcIntent = new Intent(getContext(), getClass());
+                    nfcIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    mNfcPendingIntent = PendingIntent.getActivity(getContext(), 0, nfcIntent, 0);
+
+                    // Filter
+                    IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+                    mNfcFilters = new IntentFilter[]{
+                            filter
+                    };
+
+
+                }
+
+                try {
 					Collect.getInstance().getFormController()
 							.setIndexWaitingForData(mPrompt.getIndex());
-					((Activity) getContext()).startActivityForResult(i,
-							FormEntryActivity.BARCODE_CAPTURE);
+					//((Activity) getContext()).startActivityForResult(i,
+					//		FormEntryActivity.BARCODE_CAPTURE);
 				} catch (ActivityNotFoundException e) {
 					Toast.makeText(
 							getContext(),
@@ -96,19 +135,19 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 
 		String s = prompt.getAnswerText();
 		if (s != null) {
-			mGetBarcodeButton.setText(getContext().getString(
+			mGetNfcButton.setText(getContext().getString(
 					R.string.replace_barcode));
 			mStringAnswer.setText(s);
 		}
 		// finish complex layout
-		addView(mGetBarcodeButton);
+		addView(mGetNfcButton);
 		addView(mStringAnswer);
 	}
 
 	@Override
 	public void clearAnswer() {
 		mStringAnswer.setText(null);
-		mGetBarcodeButton.setText(getContext().getString(R.string.get_barcode));
+		mGetNfcButton.setText(getContext().getString(R.string.get_barcode));
 	}
 
 	@Override
@@ -153,13 +192,13 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 	@Override
 	public void setOnLongClickListener(OnLongClickListener l) {
 		mStringAnswer.setOnLongClickListener(l);
-		mGetBarcodeButton.setOnLongClickListener(l);
+		mGetNfcButton.setOnLongClickListener(l);
 	}
 
 	@Override
 	public void cancelLongPress() {
 		super.cancelLongPress();
-		mGetBarcodeButton.cancelLongPress();
+		mGetNfcButton.cancelLongPress();
 		mStringAnswer.cancelLongPress();
 	}
 

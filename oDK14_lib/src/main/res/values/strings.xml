@@ -297,4 +297,6 @@
     <string name="high_resolution">Enable hi-res video</string>
     <string name="smap_read_nfc">Get NFC</string>
     <string name="smap_replace_nfc">Replace NFC</string>
+    <string name="smap_NFC_not_available">NFC not available</string>
+    <string name="smap_NFC_not_enabled">NFC is not enabled</string>
 </resources>
