@@ -46,12 +46,9 @@
     <string name="smap_taskMap">Task Map</string>
     <string name="smap_zoom_data">Zoom to Tasks </string>
     <string name="smap_project">Project </string>
-    <string name="smap_NFC_not_available">NFC not available</string>
-    <string name="smap_NFC_not_enabled">NFC is not enabled</string>
-    <string name="smap_NFC_is_available">NFC is available</string>
-    <string name="smap_no_tasks_NFC">No tasks are started by NFC tags</string>
-    <string name="smap_no_matching_tasks_NFC">No tasks match this NFC  : %1$s</string>
-    <string name="smap_starting_task_from_NFC">Starting task from NFC  : %1$s</string>
+    <string name="smap_no_tasks_nfc">No tasks are started by NFC tags</string>
+    <string name="smap_no_matching_tasks_nfc">No tasks match this NFC  : %1$s</string>
+    <string name="smap_starting_task_from_nfc">Starting task from NFC  : %1$s</string>
     <string name="smap_must_start_from_nfc">This task must be started by swiping an NFC</string>
     <string name="read_only">This task is complete and only its comments can be changed</string>
 </resources>

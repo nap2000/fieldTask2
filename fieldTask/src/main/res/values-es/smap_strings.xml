@@ -47,12 +47,9 @@
   <string name="smap_taskMap">Mapa de Tareas</string>
   <string name="smap_zoom_data">Zoom a Tareas</string>
   <string name="smap_project">Proyecto </string>
-  <string name="smap_NFC_not_available">NFC no disponible en dispositivo</string>
-  <string name="smap_NFC_not_enabled">NFC no esta habilitado - Habilite en Ajustes del dispositivo</string>
-  <string name="smap_NFC_is_available">NFC esta disponible</string>
-  <string name="smap_no_tasks_NFC">Ninguna tarea requiere lectura de tags NFC</string>
-  <string name="smap_no_matching_tasks_NFC">Ninguna tarea corresponde al tag NFC leído : %1$s</string>
-  <string name="smap_starting_task_from_NFC">Activando tarea con tag NFC  : %1$s</string>
+  <string name="smap_no_tasks_nfc">Ninguna tarea requiere lectura de tags NFC</string>
+  <string name="smap_no_matching_tasks_nfc">Ninguna tarea corresponde al tag NFC leído : %1$s</string>
+  <string name="smap_starting_task_from_nfc">Activando tarea con tag NFC  : %1$s</string>
   <string name="smap_must_start_from_nfc">Esta tarea requiere lectura de tag NFC - Favor acerque el celular al tag</string>
   <string name="read_only">This task is complete and only its comments can be changed</string>
 

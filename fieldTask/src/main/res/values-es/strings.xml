@@ -30,4 +30,7 @@
 	<string name="send_data">Enviar Datos</string>
 	<string name="show_sent_and_unsent_forms">Mostrar Formularios Completos e Imcompletos</string>
 	<string name="show_unsent_forms">Mostrar Formularios Completos</string>
+    <string name="smap_nfc_not_available">NFC no disponible en dispositivo</string>
+    <string name="smap_nfc_not_enabled">NFC no esta habilitado - Habilite en Ajustes del dispositivo</string>
+    <string name="smap_nfc_is_available">NFC esta disponible</string>
 </resources>

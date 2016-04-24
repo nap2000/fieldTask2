@@ -31,19 +31,19 @@ import org.odk.collect.android.activities.FormEntryActivity;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.listeners.FormDownloaderListener;
 import org.odk.collect.android.listeners.InstanceUploaderListener;
+import org.odk.collect.android.listeners.NFCListener;
 import org.odk.collect.android.logic.FormDetails;
 import org.odk.collect.android.preferences.AdminPreferencesActivity;
 import org.odk.collect.android.preferences.PreferencesActivity;
 import org.odk.collect.android.provider.FormsProviderAPI;
 import org.odk.collect.android.provider.InstanceProviderAPI;
+import org.odk.collect.android.tasks.NdefReaderTask;
 import org.odk.collect.android.utilities.CompatibilityUtils;
 import org.smap.smapTask.android.R;
-import org.smap.smapTask.android.listeners.NFCListener;
 import org.smap.smapTask.android.listeners.TaskDownloaderListener;
 import org.smap.smapTask.android.loaders.TaskEntry;
 import org.smap.smapTask.android.taskModel.NfcTrigger;
 import org.smap.smapTask.android.tasks.DownloadTasksTask;
-import org.smap.smapTask.android.tasks.NdefReaderTask;
 import org.smap.smapTask.android.utilities.ManageForm;
 import org.smap.smapTask.android.utilities.Utilities;
 
@@ -87,7 +87,7 @@ import android.nfc.NfcAdapter;	// NFC
 
 public class MainTabsActivity extends TabActivity implements 
 		TaskDownloaderListener,
-		NFCListener,
+        NFCListener,
 		InstanceUploaderListener,
 		FormDownloaderListener{
 
@@ -202,12 +202,12 @@ public class MainTabsActivity extends TabActivity implements
         if (mNfcAdapter == null) {
             Toast.makeText(
                     MainTabsActivity.this,
-                    getString(R.string.smap_NFC_not_available),
+                    getString(R.string.smap_nfc_not_available),
                     Toast.LENGTH_SHORT).show();
         } else if (!mNfcAdapter.isEnabled()) {
             Toast.makeText(
                     MainTabsActivity.this,
-                    getString(R.string.smap_NFC_not_enabled),
+                    getString(R.string.smap_nfc_not_enabled),
                     Toast.LENGTH_SHORT).show();
         } else {
             /*
@@ -228,7 +228,7 @@ public class MainTabsActivity extends TabActivity implements
 
             Toast.makeText(
                     MainTabsActivity.this,
-                    getString(R.string.smap_NFC_is_available),
+                    getString(R.string.smap_nfc_is_available),
                     Toast.LENGTH_SHORT).show();
 
         }
@@ -682,12 +682,12 @@ public class MainTabsActivity extends TabActivity implements
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
             mReadNFC = new NdefReaderTask();
-            mReadNFC.setDownloaderListener(this, mContext);
+            mReadNFC.setDownloaderListener(this);
             mReadNFC.execute(tag);
         } else {
             Toast.makeText(
                     MainTabsActivity.this,
-                    R.string.smap_no_tasks_NFC,
+                    R.string.smap_no_tasks_nfc,
                     Toast.LENGTH_SHORT).show();
         }
 
@@ -724,7 +724,7 @@ public class MainTabsActivity extends TabActivity implements
 
                     Toast.makeText(
                             MainTabsActivity.this,
-                            getString(R.string.smap_starting_task_from_NFC, result),
+                            getString(R.string.smap_starting_task_from_nfc, result),
                             Toast.LENGTH_SHORT).show();
 
                     break;
@@ -734,7 +734,7 @@ public class MainTabsActivity extends TabActivity implements
         if(!foundTask) {
             Toast.makeText(
                     MainTabsActivity.this,
-                    getString(R.string.smap_no_matching_tasks_NFC, result),
+                    getString(R.string.smap_no_matching_tasks_nfc, result),
                     Toast.LENGTH_SHORT).show();
         }
 	}
