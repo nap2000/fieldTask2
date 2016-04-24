@@ -44,12 +44,12 @@
     <string name="smap_taskMap">خريطة المهام</string>
     <string name="smap_zoom_data"> الانتقال للمعلومات </string>
     <string name="smap_project">مشروع </string>
-    <string name="smap_NFC_not_available">NFC غير متاح خاصية </string>
-    <string name="smap_NFC_not_enabled">NFC غير مفعلة خاصية</string>
-    <string name="smap_NFC_is_available">NFC متاحة خاصية</string>
-    <string name="smap_no_tasks_NFC">NFC tags  لا يوجد مهام تعمل لــ خاصية  </string>
-    <string name="smap_no_matching_tasks_NFC">لا يوجد مهام متتابقة مع هذا  NFC  : %1$s</string>
-    <string name="smap_starting_task_from_NFC">بدء المهمة من  NFC  : %1$s</string>
+    <string name="smap_nfc_not_available">NFC غير متاح خاصية </string>
+    <string name="smap_nfc_not_enabled">NFC غير مفعلة خاصية</string>
+    <string name="smap_nfc_is_available">NFC متاحة خاصية</string>
+    <string name="smap_no_tasks_nfc">NFC tags  لا يوجد مهام تعمل لــ خاصية  </string>
+    <string name="smap_no_matching_tasks_nfc">لا يوجد مهام متتابقة مع هذا  NFC  : %1$s</string>
+    <string name="smap_starting_task_from_nfc">بدء المهمة من  NFC  : %1$s</string>
     <string name="smap_must_start_from_nfc">يجب أن تبدأ هذه المهمة عن طريق تمرير ل خاصية  NFC</string>
     <string name="read_only">المهمة تمت و فقط مسموح التعديل على الملاحظات</string>
     
