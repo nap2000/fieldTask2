@@ -110,7 +110,6 @@ public class MainTabsActivity extends TabActivity implements
     private static final int MENU_GETFORMS = Menu.FIRST + 6;
 
 	private NfcAdapter mNfcAdapter;		// NFC
-	public static final String MIME_TEXT_PLAIN = "text/plain";	// NFC
 	public NdefReaderTask mReadNFC;
     public ArrayList<NfcTrigger> nfcTriggersList;   // nfcTriggers (geofence should have separate list)
     public ArrayList<NfcTrigger> nfcTriggersMap;    // nfcTriggers (geofence should have separate list)

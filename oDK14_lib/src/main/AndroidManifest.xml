@@ -162,6 +162,9 @@
             android:name=".activities.GeoPointMapActivity"
             android:label="@string/app_name" />
         <activity
+            android:name=".activities.NFCActivity"
+            android:label="@string/app_name" />
+        <activity
             android:name=".activities.GeoPointMapActivitySdk7"
             android:label="@string/app_name" />
         <activity

@@ -295,8 +295,11 @@
     <string name="survey_saving_encrypting_message">Encrypting data…</string>
     <string name="high_resolution_summary">Enable high-resolution video recordings</string>
     <string name="high_resolution">Enable hi-res video</string>
-    <string name="smap_read_nfc">Get NFC</string>
+    <string name="smap_read_nfc">Read NFC</string>
+    <string name="smap_reading_nfc">Reading NFC</string>
     <string name="smap_replace_nfc">Replace NFC</string>
-    <string name="smap_NFC_not_available">NFC not available</string>
-    <string name="smap_NFC_not_enabled">NFC is not enabled</string>
+    <string name="smap_nfc_not_available">NFC not available</string>
+    <string name="smap_nfc_is_available">NFC is available</string>
+    <string name="smap_nfc_not_enabled">NFC is not enabled</string>
+    <string name="smap_swipe_nfc">Place phone against NFC</string>
 </resources>

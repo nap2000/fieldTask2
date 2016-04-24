@@ -148,10 +148,13 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 	public static final int ALIGNED_IMAGE = 16;
 	public static final int BEARING_CAPTURE = 17;
     public static final int EX_GROUP_CAPTURE = 18;
+    public static final int NFC_CAPTURE = 19;           // smap
 
 	// Extra returned from gp activity
 	public static final String LOCATION_RESULT = "LOCATION_RESULT";
 	public static final String BEARING_RESULT = "BEARING_RESULT";
+
+    public static final String NFC_RESULT = "NFC_RESULT";   // smap
 
 	public static final String KEY_INSTANCES = "instances";
 	public static final String KEY_SUCCESS = "success";
@@ -721,6 +724,11 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			((ODKView) mCurrentView).setBinaryData(sl);
 			saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
 			break;
+        case NFC_CAPTURE:       // smap
+            String nfcId = intent.getStringExtra(NFC_RESULT);
+            ((ODKView) mCurrentView).setBinaryData(nfcId);
+            saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
+            break;
 		case BEARING_CAPTURE:
             String bearing = intent.getStringExtra(BEARING_RESULT);
             ((ODKView) mCurrentView).setBinaryData(bearing);

@@ -36,6 +36,9 @@ import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.odk.collect.android.R;
 import org.odk.collect.android.activities.FormEntryActivity;
+import org.odk.collect.android.activities.GeoPointMapActivity;
+import org.odk.collect.android.activities.GeoPointMapActivitySdk7;
+import org.odk.collect.android.activities.NFCActivity;
 import org.odk.collect.android.application.Collect;
 
 /**
@@ -68,7 +71,7 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 		mGetNfcButton.setEnabled(!prompt.isReadOnly());
 		mGetNfcButton.setLayoutParams(params);
 
-		// launch nfc capture intent on click  TODO code from here on needs changing for NFC
+		// launch nfc capture intent on click
 		mGetNfcButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -77,53 +80,13 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 						.logInstanceAction(this, "recordNfc", "click",
 								mPrompt.getIndex());
 
-                // Set up the
-                mNfcAdapter = NfcAdapter.getDefaultAdapter(getContext());
 
-                if (mNfcAdapter == null) {
-                    Toast.makeText(
-                            getContext(),
-                            getContext().getString(R.string.smap_NFC_not_available),
-                            Toast.LENGTH_SHORT).show();
-                } else if (!mNfcAdapter.isEnabled()) {
-                    Toast.makeText(
-                            getContext(),
-                            getContext().getString(R.string.smap_NFC_not_enabled),
-                            Toast.LENGTH_SHORT).show();
-                } else {
+                Intent i = new Intent(getContext(), NFCActivity.class);
+                Collect.getInstance().getFormController()
+                        .setIndexWaitingForData(mPrompt.getIndex());
+                ((Activity) getContext()).startActivityForResult(i,
+                        FormEntryActivity.NFC_CAPTURE);
 
-                    /*
-                     * Set up NFC adapter
-                     */
-
-                    // Pending intent
-                    Intent nfcIntent = new Intent(getContext(), getClass());
-                    nfcIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    mNfcPendingIntent = PendingIntent.getActivity(getContext(), 0, nfcIntent, 0);
-
-                    // Filter
-                    IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-                    mNfcFilters = new IntentFilter[]{
-                            filter
-                    };
-
-
-                }
-
-                try {
-					Collect.getInstance().getFormController()
-							.setIndexWaitingForData(mPrompt.getIndex());
-					//((Activity) getContext()).startActivityForResult(i,
-					//		FormEntryActivity.BARCODE_CAPTURE);
-				} catch (ActivityNotFoundException e) {
-					Toast.makeText(
-							getContext(),
-							getContext().getString(
-									R.string.barcode_scanner_error),
-							Toast.LENGTH_SHORT).show();
-					Collect.getInstance().getFormController()
-							.setIndexWaitingForData(null);
-				}
 			}
 		});
 
@@ -136,7 +99,7 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 		String s = prompt.getAnswerText();
 		if (s != null) {
 			mGetNfcButton.setText(getContext().getString(
-					R.string.replace_barcode));
+					R.string.smap_replace_nfc));
 			mStringAnswer.setText(s);
 		}
 		// finish complex layout
