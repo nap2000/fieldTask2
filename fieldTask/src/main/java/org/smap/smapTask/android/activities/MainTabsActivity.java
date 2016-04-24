@@ -197,40 +197,55 @@ public class MainTabsActivity extends TabActivity implements
         /*
 		 * NFC
 		 */
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        boolean authorised = false;
+        if (settings == null) {
+            settings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
 
-        if (mNfcAdapter == null) {
-            Toast.makeText(
-                    MainTabsActivity.this,
-                    getString(R.string.smap_nfc_not_available),
-                    Toast.LENGTH_SHORT).show();
-        } else if (!mNfcAdapter.isEnabled()) {
-            Toast.makeText(
-                    MainTabsActivity.this,
-                    getString(R.string.smap_nfc_not_enabled),
-                    Toast.LENGTH_SHORT).show();
+        if (settings.getBoolean(PreferencesActivity.KEY_STORE_LOCATION_TRIGGER, true)) {
+            mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+            authorised = true;
         } else {
-            /*
-             * Set up NFC adapter
-             */
-
-            // Pending intent
-            Intent nfcIntent = new Intent(getApplicationContext(), getClass());
-            nfcIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            mNfcPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, nfcIntent, 0);
-
-            // Filter
-            IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-            mNfcFilters = new IntentFilter[] {
-                    filter
-            };
-
-
             Toast.makeText(
                     MainTabsActivity.this,
-                    getString(R.string.smap_nfc_is_available),
+                    getString(R.string.smap_nfc_not_authorised),
                     Toast.LENGTH_SHORT).show();
+        }
 
+        if(authorised) {
+            if (mNfcAdapter == null) {
+                Toast.makeText(
+                        MainTabsActivity.this,
+                        getString(R.string.smap_nfc_not_available),
+                        Toast.LENGTH_SHORT).show();
+            } else if (!mNfcAdapter.isEnabled()) {
+                Toast.makeText(
+                        MainTabsActivity.this,
+                        getString(R.string.smap_nfc_not_enabled),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                /*
+                 * Set up NFC adapter
+                 */
+
+                // Pending intent
+                Intent nfcIntent = new Intent(getApplicationContext(), getClass());
+                nfcIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                mNfcPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, nfcIntent, 0);
+
+                // Filter
+                IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+                mNfcFilters = new IntentFilter[]{
+                        filter
+                };
+
+
+                Toast.makeText(
+                        MainTabsActivity.this,
+                        getString(R.string.smap_nfc_is_available),
+                        Toast.LENGTH_SHORT).show();
+
+            }
         }
     }
 	
