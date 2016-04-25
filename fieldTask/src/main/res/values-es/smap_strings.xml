@@ -1,22 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-		Copyright (C) 2013 Smap Consulting Pty Ltd Licensed under the Apache
-		License, Version 2.0 (the "License"); you may not use this file except
-		in compliance with the License. You may obtain a copy of the License
-		at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
-		applicable law or agreed to in writing, software distributed under the
-		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-		CONDITIONS OF ANY KIND, either express or implied. See the License for
-		the specific language governing permissions and limitations under the
-		License.
-
-		This file contains strings that are specific to fieldTask
--->
-<resources
-  xmlns:tools="http://schemas.android.com/tools"
-  tools:ignore="MissingTranslation">
-
-
+<?xml version='1.0' encoding='UTF-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="smap_accept_task">Acepte la tarea</string>
   <string name="smap_accepted">: aceptada. </string>
   <string name="smap_cannot_accept">Incapaz de aceptar la tarea</string>
@@ -34,7 +17,7 @@
   <string name="smap_menu_settings">Ajustes</string>
   <string name="smap_missed">: rechazado. </string>
   <string name="smap_no_tasks">Ninguna Tarea fue descargada</string>
-  <string name="smap_no_tasks_display">Ninguna Tarea para mostrar</string>
+  <string name="smap_no_tasks_display"></string>
   <string name="smap_pending">: pendiente. </string>
   <string name="smap_reject_task">Tarea Rechazada</string>
   <string name="smap_route_finding_inprogress">Encontrando ruta para la tarea</string>
@@ -51,7 +34,6 @@
   <string name="smap_no_matching_tasks_nfc">Ninguna tarea corresponde al tag NFC leído : %1$s</string>
   <string name="smap_starting_task_from_nfc">Activando tarea con tag NFC  : %1$s</string>
   <string name="smap_must_start_from_nfc">Esta tarea requiere lectura de tag NFC - Favor acerque el celular al tag</string>
-  <string name="read_only">This task is complete and only its comments can be changed</string>
-
-
+  <string name="smap_nfc_not_authorised">No se ha podido iniciar las Tareas usando NFC</string>
+  <string name="read_only">Esta tarea está completa y sólo se pueden cambiar sus comentarios</string>
 </resources>

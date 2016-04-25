@@ -41,6 +41,7 @@ import org.odk.collect.android.activities.GeoPointMapActivitySdk7;
 import org.odk.collect.android.activities.NFCActivity;
 import org.odk.collect.android.application.Collect;
 
+
 /**
  * Widget that allows user to scan NFC Id;s and add them to the form.
  * 

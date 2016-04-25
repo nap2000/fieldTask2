@@ -32,6 +32,7 @@ import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.odk.collect.android.R;
 import org.odk.collect.android.activities.FormEntryActivity;
+import org.odk.collect.android.activities.NFCActivity;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.exception.ExternalParamsException;
 import org.odk.collect.android.exception.JavaRosaException;
@@ -177,6 +178,7 @@ public class ODKView extends ScrollView implements OnLongClickListener {
         }
 
         boolean first = true;
+        FormEntryPrompt nfcPrompt = null;   // smap
         int id = 0;
         for (FormEntryPrompt p : questionPrompts) {
             if (!first) {
@@ -184,9 +186,9 @@ public class ODKView extends ScrollView implements OnLongClickListener {
                 divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
                 divider.setMinimumHeight(3);
                 mView.addView(divider);
-            } else {
-                first = false;
-            }
+            } // else {     smap - move to end
+              //  first = false;
+            //}
 
             // if question or answer type is not supported, use text widget
             QuestionWidget qw =
@@ -198,6 +200,23 @@ public class ODKView extends ScrollView implements OnLongClickListener {
             widgets.add(qw);
             mView.addView(qw, mLayout);
 
+            // Start smap
+            // Auto get NFC if first question, and not already obtained a code
+            if(first && p.getDataType() == Constants.DATATYPE_BARCODE) {
+                String appearance = p.getAppearanceHint();
+                if ( appearance == null ) appearance = "";
+                appearance = appearance.toLowerCase(Locale.ENGLISH);
+                if (appearance.contains("read_nfc")) {
+                    // Make sure an NFC code has not alredy been retrieved
+                    String s = p.getAnswerText();
+                    if (s == null) {
+                        nfcPrompt = p;
+                    }
+                }
+            }
+            // End Smap
+
+            first = false;   // smap - relocated flag for false
 
         }
 
@@ -219,7 +238,14 @@ public class ODKView extends ScrollView implements OnLongClickListener {
 				        	}
 						}
 					}, 150);
-	        }
+
+	        } else if(nfcPrompt != null) {    // Smap - auto get NFC
+                Intent i = new Intent(getContext(), NFCActivity.class);
+                Collect.getInstance().getFormController()
+                        .setIndexWaitingForData(nfcPrompt.getIndex());
+                ((Activity) getContext()).startActivityForResult(i,
+                        FormEntryActivity.NFC_CAPTURE);
+            }
         }
     }
     
