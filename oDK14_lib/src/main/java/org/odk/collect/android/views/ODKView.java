@@ -450,4 +450,8 @@ public class ODKView extends ScrollView implements OnLongClickListener {
         }
     }
 
+    public void stopAudio() {
+        widgets.get(0).stopAudio();
+    }
+
 }

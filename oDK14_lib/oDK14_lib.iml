@@ -100,11 +100,11 @@
     <orderEntry type="library" exported="" name="commons-io-2.4" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
     <orderEntry type="library" exported="" name="regexp-me" level="project" />
-    <orderEntry type="library" exported="" name="javarosa-libraries-2014-04-29" level="project" />
     <orderEntry type="library" exported="" name="apache-mime4j-0.6" level="project" />
     <orderEntry type="library" exported="" name="kxml3" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.0" level="project" />
     <orderEntry type="library" exported="" name="httpclientandroidlib-4.2.1" level="project" />
+    <orderEntry type="library" exported="" name="javarosa-libraries-2016-04-21" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.0" level="project" />
     <orderEntry type="module" module-name="playservices" exported="" />
     <orderEntry type="library" exported="" name="effects-Google Inc.:Google APIs:19" level="project" />
