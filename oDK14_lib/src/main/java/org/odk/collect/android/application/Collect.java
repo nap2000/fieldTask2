@@ -14,13 +14,8 @@
 
 package org.odk.collect.android.application;
 
-import android.app.Application;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.location.Location;
-import android.os.Environment;
-import android.preference.PreferenceManager;
+import java.io.File;
+import android.location.Location;       // smap
 
 import org.odk.collect.android.R;
 import org.odk.collect.android.database.ActivityLogger;
@@ -36,7 +31,12 @@ import org.opendatakit.httpclientandroidlib.impl.client.BasicCookieStore;
 import org.opendatakit.httpclientandroidlib.protocol.BasicHttpContext;
 import org.opendatakit.httpclientandroidlib.protocol.HttpContext;
 
-import java.io.File;
+import android.app.Application;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 
 /**
  * Extends the Application class to implement
@@ -226,10 +226,11 @@ public class Collect extends Application {
         super.onCreate();
 
         PropertyManager mgr = new PropertyManager(this);
+
+        FormController.initializeJavaRosa(mgr);
+
         mActivityLogger = new ActivityLogger(
                 mgr.getSingularProperty(PropertyManager.DEVICE_ID_PROPERTY));
-
-
     }
 
     // Begin Smap

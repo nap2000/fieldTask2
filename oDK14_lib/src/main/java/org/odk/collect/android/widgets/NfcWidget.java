@@ -57,7 +57,6 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 
 	public NfcWidget(Context context, FormEntryPrompt prompt) {
 		super(context, prompt);
-		setOrientation(LinearLayout.VERTICAL);
 
 		TableLayout.LayoutParams params = new TableLayout.LayoutParams();
 		params.setMargins(7, 5, 7, 5);
@@ -104,8 +103,13 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 			mStringAnswer.setText(s);
 		}
 		// finish complex layout
-		addView(mGetNfcButton);
-		addView(mStringAnswer);
+		//addView(mGetNfcButton);
+		//addView(mStringAnswer);
+        LinearLayout answerLayout = new LinearLayout(getContext());
+        answerLayout.setOrientation(LinearLayout.VERTICAL);
+        answerLayout.addView(mGetNfcButton);
+        answerLayout.addView(mStringAnswer);
+        addAnswerView(answerLayout);
 	}
 
 	@Override

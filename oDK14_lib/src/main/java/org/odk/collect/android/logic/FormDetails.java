@@ -29,7 +29,7 @@ public class FormDetails implements Serializable {
     public final String manifestUrl;
     public final String formID;
     public final String formVersion;
-    public final boolean tasks_only;
+    public final boolean tasks_only;    // smap
 
 
     public FormDetails(String error) {
@@ -39,7 +39,7 @@ public class FormDetails implements Serializable {
         formID = null;
         formVersion = null;
         errorStr = error;
-        tasks_only = false;
+        tasks_only = false;     // smap
     }
 
 
@@ -50,7 +50,7 @@ public class FormDetails implements Serializable {
         formID = id;
         formVersion = version;
         errorStr = null;
-        this.tasks_only = tasks_only;
+        this.tasks_only = tasks_only;   // smap
     }
 
 }
