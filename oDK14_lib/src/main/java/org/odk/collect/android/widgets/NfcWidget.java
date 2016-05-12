@@ -36,8 +36,7 @@ import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.odk.collect.android.R;
 import org.odk.collect.android.activities.FormEntryActivity;
-import org.odk.collect.android.activities.GeoPointMapActivity;
-import org.odk.collect.android.activities.GeoPointMapActivitySdk7;
+
 import org.odk.collect.android.activities.NFCActivity;
 import org.odk.collect.android.application.Collect;
 

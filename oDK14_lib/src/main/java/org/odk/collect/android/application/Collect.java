@@ -14,7 +14,12 @@
 
 package org.odk.collect.android.application;
 
-import java.io.File;
+import android.app.Application;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.location.Location;       // smap
 
 import org.odk.collect.android.R;
@@ -24,19 +29,15 @@ import org.odk.collect.android.logic.FormController;
 import org.odk.collect.android.logic.PropertyManager;
 import org.odk.collect.android.preferences.PreferencesActivity;
 import org.odk.collect.android.utilities.AgingCredentialsProvider;
+import org.odk.collect.android.utilities.PRNGFixes;
 import org.opendatakit.httpclientandroidlib.client.CookieStore;
 import org.opendatakit.httpclientandroidlib.client.CredentialsProvider;
-import org.opendatakit.httpclientandroidlib.client.protocol.ClientContext;
+import org.opendatakit.httpclientandroidlib.client.protocol.HttpClientContext;
 import org.opendatakit.httpclientandroidlib.impl.client.BasicCookieStore;
 import org.opendatakit.httpclientandroidlib.protocol.BasicHttpContext;
 import org.opendatakit.httpclientandroidlib.protocol.HttpContext;
 
-import android.app.Application;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
-import android.preference.PreferenceManager;
+import java.io.File;
 
 /**
  * Extends the Application class to implement
@@ -44,6 +45,10 @@ import android.preference.PreferenceManager;
  * @author carlhartung
  */
 public class Collect extends Application {
+
+    static {
+		PRNGFixes.apply();
+	}
 
     // Storage paths
     public static final String ODK_ROOT = Environment.getExternalStorageDirectory()
@@ -58,6 +63,7 @@ public class Collect extends Application {
     public static final String LOG_PATH = ODK_ROOT + File.separator + "log";
 
     public static final String DEFAULT_FONTSIZE = "21";
+    public static final String OFFLINE_LAYERS = ODK_ROOT + File.separator + "layers";
 
     // share all session cookies across all sessions...
     private CookieStore cookieStore = new BasicCookieStore();
@@ -132,7 +138,7 @@ public class Collect extends Application {
         }
 
         String[] dirs = {
-                ODK_ROOT, FORMS_PATH, INSTANCES_PATH, CACHE_PATH, METADATA_PATH
+                ODK_ROOT, FORMS_PATH, INSTANCES_PATH, CACHE_PATH, METADATA_PATH,OFFLINE_LAYERS
         };
 
         for (String dirName : dirs) {
@@ -191,8 +197,8 @@ public class Collect extends Application {
         // shared across independent activities.
         HttpContext localContext = new BasicHttpContext();
 
-        localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-        localContext.setAttribute(ClientContext.CREDS_PROVIDER, credsProvider);
+        localContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
+        localContext.setAttribute(HttpClientContext.CREDS_PROVIDER, credsProvider);
 
         return localContext;
     }

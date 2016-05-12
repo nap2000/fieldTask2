@@ -14,13 +14,13 @@
 
 package org.odk.collect.android.widgets;
 
-import java.util.Locale;
+import android.content.Context;
+import android.util.Log;
 
 import org.javarosa.core.model.Constants;
 import org.javarosa.form.api.FormEntryPrompt;
 
-import android.content.Context;
-import android.util.Log;
+import java.util.Locale;
 
 /**
  * Convenience class that handles creation of widgets.
@@ -76,6 +76,12 @@ public class WidgetFactory {
                     case Constants.DATATYPE_GEOPOINT:
                         questionWidget = new GeoPointWidget(context, fep);
                         break;
+                    case Constants.DATATYPE_GEOSHAPE:
+                        questionWidget = new GeoShapeWidget(context, fep);
+                        break;
+                    case Constants.DATATYPE_GEOTRACE:
+                        questionWidget = new GeoTraceWidget(context, fep);
+                        break;
                     case Constants.DATATYPE_BARCODE:
                         if (appearance.contains("read_nfc")) {
                             questionWidget = new NfcWidget(context, fep);
@@ -119,6 +125,9 @@ public class WidgetFactory {
             		questionWidget = new ImageWidget(context, fep);
             	}
                 break;
+            case Constants.CONTROL_OSM_CAPTURE:
+            	questionWidget = new OSMWidget(context, fep);
+            	break;
             case Constants.CONTROL_AUDIO_CAPTURE:
                 questionWidget = new AudioWidget(context, fep);
                 break;
@@ -169,6 +178,8 @@ public class WidgetFactory {
                     questionWidget = new ListWidget(context, fep, true);
                 } else if (appearance.equals("label")) {
                     questionWidget = new LabelWidget(context, fep);
+                } else if (appearance.contains("search")) {
+                    questionWidget = new SelectOneSearchWidget(context, fep);
                 } else {
                     questionWidget = new SelectOneWidget(context, fep, readOnlyOverride);   // smap - add readOnlyOverride
                 }

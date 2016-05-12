@@ -54,7 +54,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:visibility="gone"				
+            android:visibility="gone"
             android:textSize="21sp" />
 
         <CheckBox
@@ -64,7 +64,7 @@
             android:layout_gravity="left"
             android:layout_marginBottom="10dp"
             android:text="@string/mark_finished"
-            android:visibility="gone"				
+            android:visibility="gone"
             android:textSize="21sp" />
 
         <Button

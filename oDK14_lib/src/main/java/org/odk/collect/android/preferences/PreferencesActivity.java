@@ -60,6 +60,7 @@ public class PreferencesActivity extends PreferenceActivity implements
 	public static final String KEY_SHOW_SPLASH = "showSplash";
 	public static final String KEY_SPLASH_PATH = "splashPath";
 	public static final String KEY_FONT_SIZE = "font_size";
+    public static final String KEY_DELETE_AFTER_SEND = "delete_send";
 	public static final String KEY_SELECTED_GOOGLE_ACCOUNT = "selected_google_account";
 	public static final String KEY_GOOGLE_SUBMISSION = "google_submission_id";
 
@@ -99,6 +100,10 @@ public class PreferencesActivity extends PreferenceActivity implements
 
     public static final String KEY_STORE_USER_TRAIL = "smap_gps_trail";       // smap
     public static final String KEY_STORE_LOCATION_TRIGGER = "smap_location_trigger";       // smap
+
+    // Maps
+    public static final String KEY_MAP_SDK = "map_sdk_behavior";
+    public static final String KEY_MAP_BASEMAP = "map_basemap_behavior";
 
 	private PreferenceScreen mSplashPathPreference;
 	private EditTextPreference mSubmissionUrlPreference;

@@ -1,8 +1,10 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion "Google Inc.:Google APIs:19"
-    buildToolsVersion '23.0.2'
+    //compileSdkVersion "Google Inc.:Google APIs:19"
+    //buildToolsVersion '23.0.2'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         // applicationId "org.odk.collect.android"
@@ -28,22 +30,23 @@ android {
 }
 
 dependencies {
-    compile project(':playservices')
-    //compile files('libs/android-support-v4.jar')
-    compile 'com.android.support:support-v4:21.0.0'
-    compile files('libs/apache-mime4j-0.6.jar')
-    compile files('libs/commons-io-2.4.jar')
-    compile files('libs/httpclientandroidlib-4.2.1.jar')
-    compile files('libs/httpmime-4.0.jar')
-    compile files('libs/javarosa-libraries-2016-04-21.jar')
-    compile files('libs/joda-time-2.9.3.jar')
-    compile files('libs/opencsv-2.3.jar')
-    compile files('libs/regexp-me.jar')
-    compile files('libs/kxml3.jar')
-    compile files('libs/google-api-client-1.20.0.jar')
-    compile files('libs/google-api-client-android-1.20.0.jar')
-    compile files('libs/google-http-client-1.20.0.jar')
-    compile files('libs/google-http-client-android-1.20.0.jar')
+    //compile project(':playservices')
+    compile 'com.android.support:support-v4:23.0.0'
+    //compile files('libs/apache-mime4j-0.6.jar')
+    //compile files('libs/commons-io-2.4.jar')
+    //compile files('libs/httpclientandroidlib-4.5.2-1.jar')
+    //compile files('libs/httpmime-4.0.jar')
+    //compile files('libs/javarosa-libraries-2016-04-21.jar')
+    //compile files('libs/joda-time-2.9.3.jar')
+    //compile files('libs/opencsv-2.3.jar')
+    //compile files('libs/regexp-me.jar')
+    //compile files('libs/kxml3.jar')
+    //compile files('libs/google-api-client-1.20.0.jar')
+    //compile files('libs/google-api-client-android-1.20.0.jar')
+    //compile files('libs/google-http-client-1.20.0.jar')
+    //compile files('libs/google-http-client-android-1.20.0.jar')
 
-    //provided files('libs/kxml2-2.3.0.jar')
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.google.android.gms:play-services:4.1.32'
+
 }

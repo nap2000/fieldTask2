@@ -192,10 +192,10 @@ public class AnnotateWidget extends QuestionWidget implements IBinaryWidget {
 		LinearLayout answerLayout = new LinearLayout(getContext());
 		answerLayout.setOrientation(LinearLayout.VERTICAL);
 
-        answerLayout.addView(mCaptureButton);
-        answerLayout.addView(mChooseButton);
-        answerLayout.addView(mAnnotateButton);
-        answerLayout.addView(mErrorTextView);
+		answerLayout.addView(mCaptureButton);
+		answerLayout.addView(mChooseButton);
+		answerLayout.addView(mAnnotateButton);
+		answerLayout.addView(mErrorTextView);
 
         // Smap hide the choose button if appearance is appearance is nochoose
         if(nochoose(prompt)) {
