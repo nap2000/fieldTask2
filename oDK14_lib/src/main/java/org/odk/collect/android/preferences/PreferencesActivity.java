@@ -140,6 +140,8 @@ public class PreferencesActivity extends PreferenceActivity implements
 
 		boolean serverAvailable = adminPreferences.getBoolean(
 				AdminPreferencesActivity.KEY_CHANGE_SERVER, true);
+		boolean urlAvailable = adminPreferences.getBoolean(
+				AdminPreferencesActivity.KEY_CHANGE_URL, true);
 
         // Smap start
         // Add ability to turn off user trail of gps locations
@@ -249,7 +251,7 @@ public class PreferencesActivity extends PreferenceActivity implements
 			// disableFeaturesInDevelopment();			smap
 		}
 
-		if (!(adminMode)) {
+		if (!(urlAvailable || adminMode)) {
 			serverCategory.removePreference(mServerUrlPreference);
 		}
 
@@ -353,7 +355,7 @@ public class PreferencesActivity extends PreferenceActivity implements
 			serverCategory.removePreference(mSubmissionUrlPreference);
 		}
 
-		if (!(serverAvailable || usernameAvailable || passwordAvailable
+		if (!(serverAvailable || urlAvailable || usernameAvailable || passwordAvailable
 				|| /* googleAccountAvailable || */ adminMode)) {				// smap - remove google account
 			getPreferenceScreen().removePreference(serverCategory);
 		}

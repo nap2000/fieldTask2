@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools">
   <string name="accept_location">Kayit Yeri</string>
   <string name="accuracy">Doğruluk</string>
@@ -15,14 +15,12 @@
   <string name="cancel">Vazgeç</string>
   <string name="cancel_loading_form">Vazgeç</string>
   <string name="cancel_location">Vazgeç</string>
-  <string name="cancel_saving_form">Vazgeç</string>
   <string name="cannot_edit_completed_form">Bu form bitmiş olarak işaretlendiği için değiştirilemez. Şifrelenmiştir</string>
   <string name="capture_audio">Ses Kaydi</string>
   <string name="capture_image">Resim Çek</string>
   <string name="capture_video">Video Kayit</string>
   <string name="change_language">Dil Değiştir</string>
   <string name="change_password">ODK Şifresi</string>
-  <string name="change_server_url">URL</string>
   <string name="change_username">ODK Kullanici Adi</string>
   <string name="clearanswer_confirm">Bu yanıt kaldırılsın mı \"%s\"?</string>
   <string name="clear_answer">Yanıtları kaldır</string>
@@ -94,7 +92,6 @@
   <string name="send_data">Dolu Formu gönder</string>
   <string name="send_data_button">Dolu Formu gönder (%s)</string>
   <string name="send_selected_data">Seçili olanı gönder</string>
-  <string name="server_auth_credentials">Sunucu için kullanıcı adı ve şifre giriniz :\n%s</string>
   <string name="server_requires_auth">Server kimlik doğrulaması gerektirir</string>
   <string name="server_url">URL</string>
   <string name="server_preferences">Sunucu Ayarlari</string>
@@ -140,7 +137,6 @@
   <string name="save_as_error">İsim alani boş bırakilamaz</string>
   <string name="selected_google_account_text">Google account</string>
   <string name="server_platform_odk_aggregate">ODK Aggregate</string>
-  <string name="server_platform_google_forms">Google Forms</string>
   <string name="server_platform_other">Diğer</string>
   <string name="font_size_extra_large">Çok Büyük</string>
   <string name="font_size_large">Büyük</string>
@@ -181,7 +177,7 @@
   <string name="form_backward">Geri</string>
   <string name="navigation">navigasyon</string>
   <string name="buttons_navigation">ileri/geri butonlarini kullan </string>
-  <string name="change_url_default">URL</string>
   <string name="view_change_location">Lokasyonu Göster yada Değiştir</string>
   <string name="open_url">URL Aç</string>
+  <string name="default_google_sheets_url"></string>
 </resources>
