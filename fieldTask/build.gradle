@@ -17,12 +17,13 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     packagingOptions {
-        exclude 'lib/kxml2-2.3.0.jar'
+        //exclude 'lib/kxml2-2.3.0.jar'
+        exclude 'collect_app/libs/kxml2-2.3.0.jar'
         exclude 'intermediates/exploded-aar/fieldTask3/oDK14_lib/unspecified/libs/kxml2-2.3.0.jar'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -68,7 +69,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.0.0'
     //compile files('libs/android_maps_lib-1.1.1.jar')
     //compile files('libs/apache-mime4j-0.6.jar')
-    compile files('libs/gson-2.2.2.jar')
+    //compile files('libs/gson-2.2.2.jar')
     //compile files('libs/httpmime-4.0.jar')
     //compile files('libs/joda-time-2.0.jar')
     //compile files('libs/regexp-me.jar')
@@ -82,4 +83,8 @@ dependencies {
         transitive=true
     }
     //compile 'com.google.android.gms:play-services:4.1.32'
+
+    //tasks.withType(JavaCompile) {
+    //    options.compilerArgs <<  "-Xlint:unchecked"
+    //}
 }

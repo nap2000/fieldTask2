@@ -42,10 +42,10 @@ dependencies {
     }
 }
 android {
-    compileSdkVersion 'Google Inc.:Google APIs:19'
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 10
         targetSdkVersion 19
     }
     sourceSets {
