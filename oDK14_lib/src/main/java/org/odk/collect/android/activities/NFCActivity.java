@@ -17,32 +17,21 @@ package org.odk.collect.android.activities;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.odk.collect.android.R;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.listeners.NFCListener;
-import org.odk.collect.android.preferences.PreferencesActivity;
 import org.odk.collect.android.tasks.NdefReaderTask;
-import org.odk.collect.android.utilities.InfoLogger;
-import org.odk.collect.android.widgets.GeoPointWidget;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NFCActivity extends Activity implements NFCListener {
 
