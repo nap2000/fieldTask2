@@ -30,8 +30,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.preferences.PreferencesActivity;
 import org.smap.smapTask.android.R;

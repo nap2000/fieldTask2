@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -51,7 +56,7 @@ import org.smap.smapTask.android.loaders.TaskEntry;
 
 import static org.smap.smapTask.android.R.drawable;
 
-public class MapFragment extends Fragment implements LoaderManager.LoaderCallbacks<MapEntry>
+public class MapFragment extends Fragment implements LoaderManager.LoaderCallbacks<MapEntry>, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener
 {
 
     private static final String TAG = "MapFragment";
@@ -67,18 +72,18 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
     private double tasksWest;
 
     Marker userLocationMarker = null;
-    Icon userLocationIcon = null;
-    Icon accepted = null;
-    Icon repeat = null;
-    Icon rejected = null;
-    Icon complete = null;
-    Icon submitted = null;
-    Icon triggered = null;
-    Icon triggered_repeat = null;
 
     private static MainTabsActivity mainTabsActivity;
 
     private MapView mv;
+    private GoogleMap mMap;
+    private MarkerOptions mMarkerOption;
+    private Marker mMarker;
+    private LatLng mLatLng;
+
+    private boolean mGPSOn = false;
+    private boolean mNetworkOn = false;
+
     private static final int MAP_LOADER_ID = 2;
 
     public void setTabsActivity(MainTabsActivity activity) {
@@ -92,15 +97,8 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         mv = (MapView) view.findViewById(R.id.mapview);
 
-        // Create icons
-        userLocationIcon = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_userlocation)));
-        accepted = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_open)));
-        repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_repeat)));
-        rejected = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_reject)));
-        complete = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_done)));
-        submitted = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_submitted)));
-        triggered = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered)));
-        triggered_repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered_repeat)));
+        // TODO Create icons
+
         // Set Default Map Type
         replaceMapView("mapquest");
 
