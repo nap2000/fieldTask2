@@ -130,7 +130,7 @@ public class MainTabsActivity extends TabActivity implements
     private MainTabsListener listener = null;
     boolean listenerRegistered = false;
     private static List<TaskEntry> mTasks = null;
-    private static List<TaskEntry> mMapTasks = null;
+    //private static List<TaskEntry> mMapTasks = null;  Disable map tab
     private static SharedPreferences settings = null;
     private TabHost tabHost = null;
     
@@ -167,10 +167,14 @@ public class MainTabsActivity extends TabActivity implements
 	    /*
 	     * Initialise a Map tab
 	     */
+        /*
+         * Disable map tab
+         *
         Log.i(TAG, "Creating Maps Activity");
 	    intent = new Intent().setClass(this, MapsActivity.class);
 	    spec = tabHost.newTabSpec("taskMap").setIndicator(getString(R.string.smap_taskMap)).setContent(intent);
 	    tabHost.addTab(spec);
+        */
 
 		// hack to set font size
 		LinearLayout ll = (LinearLayout) tabHost.getChildAt(0);
@@ -186,6 +190,7 @@ public class MainTabsActivity extends TabActivity implements
 			mTVFF.setPadding(0, 0, 0, 6);
 		}
 
+        /* Disable map tab
 		ViewGroup rlrf = (ViewGroup) tw.getChildAt(1);
 		mTVDF = getTextViewChild(rlrf);
 		if (mTVDF != null) {
@@ -193,7 +198,7 @@ public class MainTabsActivity extends TabActivity implements
 			mTVDF.setTextColor(Color.WHITE);
 			mTVDF.setPadding(0, 0, 0, 6);
 		}
-
+        */
         /*
 		 * NFC
 		 */
@@ -756,10 +761,11 @@ public class MainTabsActivity extends TabActivity implements
 
     /*
      * Get the tasks shown on the map
-     */
+     * Disable map tab
     public List<TaskEntry> getMapTasks() {
         return mMapTasks;
     }
+    */
 
     /*
      * Manage location triggers
@@ -770,9 +776,9 @@ public class MainTabsActivity extends TabActivity implements
         ArrayList<NfcTrigger> triggers = null;
 
         if(map) {
-            mMapTasks = data;
-            nfcTriggersMap = new ArrayList<NfcTrigger> ();
-            triggers = nfcTriggersMap;
+            // mMapTasks = data;    Disable map tab
+            // nfcTriggersMap = new ArrayList<NfcTrigger> ();
+            // triggers = nfcTriggersMap;
         } else {
             mTasks = data;
             nfcTriggersList = new ArrayList<NfcTrigger> ();
@@ -906,13 +912,12 @@ public class MainTabsActivity extends TabActivity implements
                 }
             } else if (intent.getAction().equals("startMapTask")) {
 
-                int position =  intent.getIntExtra("position", -1);
-                if(position >= 0) {
-                    TaskEntry entry = (TaskEntry) mMapTasks.get(position);
-
-                    mActivity.completeTask(entry);
-
-                }
+                // Disable map tab
+                // int position =  intent.getIntExtra("position", -1);
+                //if(position >= 0) {
+                //    TaskEntry entry = (TaskEntry) mMapTasks.get(position);
+                //    mActivity.completeTask(entry);
+                //}
             }
         }
     }
