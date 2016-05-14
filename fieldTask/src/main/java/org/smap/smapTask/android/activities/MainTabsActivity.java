@@ -187,7 +187,6 @@ public class MainTabsActivity extends TabActivity implements
 			mTVFF.setPadding(0, 0, 0, 6);
 		}
 
-        /* Disable map tab
 		ViewGroup rlrf = (ViewGroup) tw.getChildAt(1);
 		mTVDF = getTextViewChild(rlrf);
 		if (mTVDF != null) {
@@ -195,7 +194,7 @@ public class MainTabsActivity extends TabActivity implements
 			mTVDF.setTextColor(Color.WHITE);
 			mTVDF.setPadding(0, 0, 0, 6);
 		}
-        */
+
         /*
 		 * NFC
 		 */

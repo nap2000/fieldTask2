@@ -31,6 +31,6 @@ public MapLocationObserver(Context context, MapFragment map) {
   @Override
   public void onReceive(Context context, Intent intent) {
       Log.i("Maps Activity: ", "++++++++received refresh");
-      mMap.setUserLocation(Collect.getInstance().getLocation(), settings.getBoolean(PreferencesActivity.KEY_STORE_USER_TRAIL, false));
+      //mMap.setUserLocation(Collect.getInstance().getLocation(), settings.getBoolean(PreferencesActivity.KEY_STORE_USER_TRAIL, false)); TODO
   }
 }

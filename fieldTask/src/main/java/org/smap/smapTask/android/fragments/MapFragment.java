@@ -20,31 +20,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.mapbox.mapboxsdk.geometry.BoundingBox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.Icon;
-import com.mapbox.mapboxsdk.overlay.ItemizedIconOverlay;
-import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.ITileLayer;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.MBTilesLayer;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.MapboxTileLayer;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.TileLayer;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
-import com.mapbox.mapboxsdk.views.MapView;
-import com.mapbox.mapboxsdk.views.util.TilesLoadedListener;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 
+
+import org.odk.collect.android.utilities.InfoLogger;
 import org.smap.smapTask.android.R;
 import org.smap.smapTask.android.activities.MainListActivity;
 import org.smap.smapTask.android.activities.MainTabsActivity;
 import org.smap.smapTask.android.utilities.Utilities;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,14 +52,14 @@ import org.smap.smapTask.android.loaders.TaskEntry;
 
 import static org.smap.smapTask.android.R.drawable;
 
-public class MapFragment extends Fragment implements LoaderManager.LoaderCallbacks<MapEntry>, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener
+public class MapFragment extends Fragment implements  LocationListener, OnMarkerDragListener, OnMapLongClickListener
 {
 
     private static final String TAG = "MapFragment";
-    PathOverlay po = null;
+    // PathOverlay po = null;  TODO
     private PointEntry lastPathPoint;
 
-    ItemizedIconOverlay markerOverlay = null;
+    // ItemizedIconOverlay markerOverlay = null;  TODO
     ArrayList<Marker> markers = null;
     HashMap<Marker, Integer> markerMap = null;
     private double tasksNorth;
@@ -75,14 +71,30 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
     private static MainTabsActivity mainTabsActivity;
 
-    private MapView mv;
     private GoogleMap mMap;
     private MarkerOptions mMarkerOption;
     private Marker mMarker;
     private LatLng mLatLng;
 
+    private Location mLocation;
+    private Button mAcceptLocation;
+    private Button mReloadLocation;
+
+    private boolean mRefreshLocation = true;
+    private boolean mIsDragged = false;
+    private Button mShowLocation;
+    private Button mLayers;
+
     private boolean mGPSOn = false;
     private boolean mNetworkOn = false;
+
+    private double mLocationAccuracy;
+    private int mLocationCount = 0;
+
+    private boolean setClear = false;
+    private boolean mCaptureLocation = false;
+    private Boolean foundFirstLocation = false;
+    private TextView mLocationStatus;
 
     private static final int MAP_LOADER_ID = 2;
 
@@ -94,104 +106,19 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
 
-        View view = inflater.inflate(R.layout.map_fragment, container, false);
-        mv = (MapView) view.findViewById(R.id.mapview);
+        View view = inflater.inflate(R.layout.map_layout, container, false);
 
         // TODO Create icons
 
-        // Set Default Map Type
-        replaceMapView("mapquest");
+        //getLoaderManager().initLoader(MAP_LOADER_ID, null, this);       // Get the task locations
 
-        getLoaderManager().initLoader(MAP_LOADER_ID, null, this);       // Get the task locations
-
-
-        mv.setOnTilesLoadedListener(new TilesLoadedListener() {
-            @Override
-            public boolean onTilesLoaded() {
-                return false;
-            }
-
-        @Override
-        public boolean onTilesLoadStarted() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-        });
-        mv.setVisibility(View.VISIBLE);
 
         return view;
     }
 
-    @Override
-    public void onLoadFinished(Loader<MapEntry> loader, MapEntry data) {
-        mainTabsActivity.setLocationTriggers(data.tasks, true);
-        showTasks(data.tasks);
-        showPoints(data.points);
-        zoomToData(false);
-    }
 
-    @Override
-    public void onLoaderReset(Loader<MapEntry> loader) {
-        clearTasks();
-    }
 
-    @Override
-    public Loader<MapEntry> onCreateLoader(int id, Bundle args) {
-        return new MapDataLoader(getActivity());
-    }
 
-    protected void replaceMapView(String layer) {
-        ITileLayer source;
-        BoundingBox box;
-        if (layer.toLowerCase().endsWith("mbtiles")) {
-            TileLayer mbTileLayer = new MBTilesLayer(getActivity(), layer);
-            //            mv.setTileSource(mbTileLayer);
-            mv.setTileSource(new ITileLayer[] {
-                mbTileLayer, new WebSourceTileLayer("mapquest",
-                    "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png").setName(
-                        "MapQuest Open Aerial")
-                        .setAttribution("Tiles courtesy of MapQuest and OpenStreetMap contributors.")
-                .setMinimumZoomLevel(1)
-                .setMaximumZoomLevel(18)
-            });
-            box = mbTileLayer.getBoundingBox();
-        } else {
-            if (layer.equalsIgnoreCase("OpenStreetMap")) {
-                source = new WebSourceTileLayer("openstreetmap",
-                        "http://tile.openstreetmap.org/{z}/{x}/{y}.png").setName("OpenStreetMap")
-                    .setAttribution("© OpenStreetMap Contributors")
-                    .setMinimumZoomLevel(1)
-                    .setMaximumZoomLevel(18);
-            } else if (layer.equalsIgnoreCase("OpenSeaMap")) {
-                source = new WebSourceTileLayer("openstreetmap",
-                        "http://tile.openstreetmap.org/seamark/{z}/{x}/{y}.png").setName(
-                            "OpenStreetMap")
-                            .setAttribution("© OpenStreetMap Contributors")
-                            .setMinimumZoomLevel(1)
-                            .setMaximumZoomLevel(18);
-            } else if (layer.equalsIgnoreCase("mapquest")) {
-                source = new WebSourceTileLayer("mapquest",
-                        "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png").setName(
-                            "MapQuest Open Aerial")
-                            .setAttribution(
-                                    "Tiles courtesy of MapQuest and OpenStreetMap contributors.")
-                            .setMinimumZoomLevel(1)
-                            .setMaximumZoomLevel(18);
-            } else {
-                source = new MapboxTileLayer(layer);
-            }
-            mv.setTileSource(source);
-            box = source.getBoundingBox();
-        }
-        //        mv.setScrollableAreaLimit(mv.getTileProvider().getBoundingBox());
-        mv.setScrollableAreaLimit(box);
-        mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
-        mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
-        mv.setCenter(mv.getTileProvider().getCenterCoordinate());
-        mv.setZoom(0);
-        Log.d(TAG, "zoomToBoundingBox " + box.toString());
-        //        mv.zoomToBoundingBox(box);
-    }
 
 
     /**
@@ -226,6 +153,9 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         alertDialog.show();
     }
 
+    /*
+     * Show Tasks TODO
+     *
     private void showTasks(List<TaskEntry> data) {
 
         tasksNorth = -90.0;
@@ -303,40 +233,12 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             lastPathPoint.lon = lastPoint.lon;
         }
     }
+    */
 
 
-    public void setUserLocation(Location location, boolean recordLocation) {
-        Log.i(TAG, "setUserLocation()");
-
-        if(location != null) {
-            LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-
-            if (markers == null) {
-                markers = new ArrayList<Marker>();
-            }
-            if (userLocationMarker == null) {
-                userLocationMarker = new Marker(mv, "", "", point);
-                userLocationMarker.setIcon(userLocationIcon);
-
-                if (markerOverlay == null) {
-                    markers.add(userLocationMarker);
-                    markerOverlay = new ItemizedIconOverlay(getActivity(), markers, onItemGestureListener);
-                    mv.getOverlays().add(markerOverlay);
-                } else {
-                    markerOverlay.addItem(userLocationMarker);
-                }
-            } else {
-                userLocationMarker.setPoint(point);
-                userLocationMarker.updateDrawingPosition();
-                userLocationMarker.setIcon(userLocationIcon);
-            }
-            if (recordLocation) {
-                updatePath(point);
-            }
-            zoomToData(true);
-        }
-    }
-
+    /*
+     * Update path TODO
+     *
     private void updatePath(LatLng point) {
         if(po == null) {
             addPathOverlay();
@@ -355,7 +257,11 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         po = new PathOverlay().setPaint(linePaint);
         mv.getOverlays().add(po);
     }
+    */
 
+    /*
+     * Zoom to data TODO
+     *
     private void zoomToData(boolean userLocationChanged) {
 
         boolean userOutsideBoundingBox = false;
@@ -427,10 +333,7 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             west -= 0.01;
         }
 
-        /*
-         * Zoom to the new bounding box only if the task list has changed or the user is outside of the current
-         *  viewable area
-         */
+
         if(north > south && east > west) {
             if(!userLocationChanged || userOutsideBoundingBox) {
                 BoundingBox bb = new BoundingBox(north, east, south, west);
@@ -438,10 +341,11 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             }
         }
     }
+    */
 
     /*
-     * Get the colour to represent the passed in task status
-     */
+     * Get the colour to represent the passed in task status TODO
+     *
     private Icon getIcon(String status, boolean isRepeat, boolean hasTrigger) {
 
         if(status.equals(Utilities.STATUS_T_REJECTED) || status.equals(Utilities.STATUS_T_CANCELLED)) {
@@ -465,10 +369,11 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             return accepted;
         }
     }
+    */
 
     /*
-     * Get the coordinates of the task and update the bounding box
-     */
+     * Get the coordinates of the task and update the bounding box TODO
+     *
     private LatLng getTaskCoords(TaskEntry t) {
 
         double lat = 0.0;
@@ -505,21 +410,12 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
         return locn;
     }
+    */
 
 
-    ItemizedIconOverlay.OnItemGestureListener<Marker> onItemGestureListener
-            = new ItemizedIconOverlay.OnItemGestureListener<Marker>(){
-
-        @Override
-        public boolean onItemLongPress(int arg0, Marker item) {
-            return processTouch(item);
-        }
-
-        @Override
-        public boolean onItemSingleTapUp(int index, Marker item) {
-            return processTouch(item);
-        }
-
+        /*
+         * Process touch on a task TODO
+         *
         public boolean processTouch(Marker item) {
 
             Integer iPos = markerMap.get(item);
@@ -539,18 +435,114 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
                 } else {
                     mainTabsActivity.completeTask(entry);
                 }
-                /*
-                Intent i = new Intent();
-                i.setAction("startMapTask");
-                i.putExtra("position", position);
-                getActivity().getParent().sendBroadcast(i);
 
-                Log.i(TAG, "Intent sent: " + position);
-                */
+
             }
 
             return true;
         }
 
     };
+*/
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        mLatLng=latLng;
+        if (mMarker == null) {
+            mMarkerOption.position(latLng);
+            mMarker = mMap.addMarker(mMarkerOption);
+//			mShowLocation.setClickable(true);
+        } else {
+            mMarker.setPosition(latLng);
+        }
+        mShowLocation.setEnabled(true);
+        mMarker.setDraggable(true);
+        mIsDragged = true;
+        setClear = false;
+        mCaptureLocation = true;
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        mLatLng = marker.getPosition();
+        mIsDragged = true;
+        mCaptureLocation = true;
+        setClear = false;
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, mMap.getCameraPosition().zoom));
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+
+    @Override
+    public void onMarkerDragStart(Marker arg0) {
+//		stopGeolocating();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    @Override
+    public void onMarkerDrag(Marker arg0) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLocation = location;
+        mReloadLocation.setEnabled(true);
+        mShowLocation.setEnabled(true);
+
+
+        if (mLocation != null) {
+            mLocationStatus.setText(getString(org.odk.collect.android.R.string.location_provider_accuracy, mLocation.getProvider(), truncateFloat(mLocation.getAccuracy())));
+            if (!mCaptureLocation & !setClear){
+                mLatLng = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                mMarkerOption.position(mLatLng);
+                mMarker = mMap.addMarker(mMarkerOption);
+//				mMarker.setPosition(mLatLng);
+                mCaptureLocation = true;
+
+            }
+            if(!foundFirstLocation){
+//				showZoomDialog();
+                zoomToPoint();
+                foundFirstLocation = true;
+
+            }
+
+        } else {
+            InfoLogger.geolog("GeoPointMapActivity: " + System.currentTimeMillis() +
+                    " onLocationChanged(" + mLocationCount + ") null location");
+        }
+
+    }
+
+    private void zoomToLocation() {
+        LatLng here = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+        if(mLocation != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(here, 16));
+        }
+    }
+
+    private void zoomToPoint(){
+        if(mLatLng != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker.getPosition(), 16));
+        }
+
+    }
+
+    private String truncateFloat(float f) {
+        return new DecimalFormat("#.##").format(f);
+    }
 }

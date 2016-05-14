@@ -81,7 +81,7 @@ public class MapsActivity extends FragmentActivity  {
         Log.i("mapsActivity", "---------------- onResume");
         super.onResume();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        map.setUserLocation(Collect.getInstance().getLocation(), false);
+        //map.setUserLocation(Collect.getInstance().getLocation(), false);
     }
 
     @Override
