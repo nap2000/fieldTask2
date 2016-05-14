@@ -167,14 +167,11 @@ public class MainTabsActivity extends TabActivity implements
 	    /*
 	     * Initialise a Map tab
 	     */
-        /*
-         * Disable map tab
-         *
+
         Log.i(TAG, "Creating Maps Activity");
 	    intent = new Intent().setClass(this, MapsActivity.class);
 	    spec = tabHost.newTabSpec("taskMap").setIndicator(getString(R.string.smap_taskMap)).setContent(intent);
 	    tabHost.addTab(spec);
-        */
 
 		// hack to set font size
 		LinearLayout ll = (LinearLayout) tabHost.getChildAt(0);
