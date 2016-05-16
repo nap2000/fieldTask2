@@ -23,10 +23,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 
 import org.smap.smapTask.android.R;
 import org.smap.smapTask.android.fragments.SmapMapFragment;
@@ -41,32 +37,23 @@ public class MapsActivity extends FragmentActivity  {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private SmapMapFragment mapManager = null;
+    private SmapMapFragment map = null;
     private MapLocationObserver mo = null;
-    private GoogleMap mMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Insert the fragment by replacing any existing fragment
-        setContentView(R.layout.map_layout);
-        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        if ( mMap == null ) {
-            Toast.makeText(getBaseContext(), getString(org.odk.collect.android.R.string.google_play_services_error_occured),
-                    Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.findFragmentById(R.id.map_content_frame) == null) {
+            map = new SmapMapFragment();
+            map.setTabsActivity((MainTabsActivity) getParent());
+            fm.beginTransaction().add(android.R.id.content, map).commit();
+
+            // Listen for new locations
+            mo = new MapLocationObserver(getApplicationContext(), map);
         }
-
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-        mapManager = new SmapMapFragment();
-        mapManager.setTabsActivity((MainTabsActivity) getParent());
-        // Listen for new locations
-        mo = new MapLocationObserver(getApplicationContext(), mapManager);
-
 
 
     }
@@ -84,7 +71,7 @@ public class MapsActivity extends FragmentActivity  {
         Log.i("mapsActivity", "---------------- onResume");
         super.onResume();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //mapManager.setUserLocation(Collect.getInstance().getLocation(), false);
+        map.setUserLocation(Collect.getInstance().getLocation(), false);
     }
 
     @Override
