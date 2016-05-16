@@ -14,28 +14,25 @@
 
 package org.smap.smapTask.android.utilities;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.provider.InstanceProviderAPI;
-import org.odk.collect.android.provider.FormsProviderAPI.FormsColumns;
-import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
-import org.odk.collect.android.tasks.DownloadFormsTask;
-import org.odk.collect.android.tasks.DownloadFormsTask.FileResult;
-import org.odk.collect.android.utilities.FileUtils;
-import org.odk.collect.android.database.TaskAssignment;
-import org.odk.collect.android.utilities.STFileUtils;
-import org.smap.smapTask.android.taskModel.FormLocator;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
+
+import org.odk.collect.android.application.Collect;
+import org.odk.collect.android.database.TaskAssignment;
+import org.odk.collect.android.provider.FormsProviderAPI.FormsColumns;
+import org.odk.collect.android.provider.InstanceProviderAPI;
+import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
+import org.odk.collect.android.utilities.FileUtils;
+import org.odk.collect.android.utilities.STFileUtils;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class ManageForm {
 	

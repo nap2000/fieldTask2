@@ -14,9 +14,37 @@
 
 package org.smap.smapTask.android.utilities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.odk.collect.android.application.Collect;
+import org.odk.collect.android.database.TaskAssignment;
+import org.odk.collect.android.preferences.PreferencesActivity;
+import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
+import org.odk.collect.android.tasks.DownloadFormsTask;
+import org.odk.collect.android.utilities.FileUtils;
+import org.odk.collect.android.utilities.STFileUtils;
+import org.odk.collect.android.utilities.WebUtils;
+import org.opendatakit.httpclientandroidlib.Header;
+import org.opendatakit.httpclientandroidlib.HttpEntity;
+import org.opendatakit.httpclientandroidlib.HttpResponse;
+import org.opendatakit.httpclientandroidlib.HttpStatus;
+import org.opendatakit.httpclientandroidlib.client.HttpClient;
+import org.opendatakit.httpclientandroidlib.client.methods.HttpGet;
+import org.opendatakit.httpclientandroidlib.protocol.HttpContext;
+import org.smap.smapTask.android.loaders.TaskEntry;
+import org.smap.smapTask.android.taskModel.InstanceXML;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -27,50 +55,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.zip.GZIPInputStream;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonSyntaxException;
-
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.database.TaskAssignment;
-import org.odk.collect.android.exception.TaskCancelledException;
-import org.odk.collect.android.preferences.PreferencesActivity;
-import org.odk.collect.android.provider.InstanceProviderAPI;
-import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
-import org.odk.collect.android.tasks.DownloadFormsTask;
-import org.odk.collect.android.utilities.FileUtils;
-import org.odk.collect.android.utilities.STFileUtils;
-
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
-import org.odk.collect.android.utilities.WebUtils;
-import org.opendatakit.httpclientandroidlib.Header;
-import org.opendatakit.httpclientandroidlib.HttpEntity;
-import org.opendatakit.httpclientandroidlib.HttpResponse;
-import org.opendatakit.httpclientandroidlib.HttpStatus;
-import org.opendatakit.httpclientandroidlib.client.HttpClient;
-import org.opendatakit.httpclientandroidlib.client.methods.HttpGet;
-import org.opendatakit.httpclientandroidlib.protocol.HttpContext;
-import org.smap.smapTask.android.loaders.PointEntry;
-import org.smap.smapTask.android.loaders.TaskEntry;
-import org.smap.smapTask.android.provider.TraceProviderAPI.TraceColumns;
-
-import org.smap.smapTask.android.taskModel.InstanceXML;
 public class Utilities {
 
     // Valid values for task status

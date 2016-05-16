@@ -28,18 +28,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.smap.smapTask.android.R;
+import org.smap.smapTask.android.loaders.TaskEntry;
 import org.smap.smapTask.android.utilities.KeyValueJsonFns;
 import org.smap.smapTask.android.utilities.Utilities;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import android.util.Log;
-
-import org.smap.smapTask.android.loaders.TaskEntry;
 
 public class TaskListArrayAdapter extends ArrayAdapter<TaskEntry> {
     

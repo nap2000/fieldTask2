@@ -1,7 +1,5 @@
 package org.smap.smapTask.android.taskModel;
 
-import java.util.Date;
-
 /**
  * Created by neilpenman on 16/11/2014.
  */

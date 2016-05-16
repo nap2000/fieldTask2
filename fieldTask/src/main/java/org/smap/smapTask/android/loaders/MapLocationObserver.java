@@ -9,17 +9,15 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.preferences.PreferencesActivity;
-import org.smap.smapTask.android.fragments.MapFragment;
+import org.smap.smapTask.android.fragments.SmapMapFragment;
 
 
 public class MapLocationObserver extends BroadcastReceiver {
 
-    private MapFragment mMap = null;
+    private SmapMapFragment mMap = null;
     SharedPreferences settings = null;
 
-public MapLocationObserver(Context context, MapFragment map) {
+public MapLocationObserver(Context context, SmapMapFragment map) {
     mMap = map;
 
     settings = PreferenceManager.getDefaultSharedPreferences(context);

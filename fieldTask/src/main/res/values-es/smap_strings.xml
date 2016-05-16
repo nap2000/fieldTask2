@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
   <string name="smap_accept_task">Acepte la tarea</string>
   <string name="smap_accepted">: aceptada. </string>
   <string name="smap_cannot_accept">Incapaz de aceptar la tarea</string>

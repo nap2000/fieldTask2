@@ -1,12 +1,6 @@
 
 package org.smap.smapTask.android.activities;
 
-import java.io.File;
-
-import org.odk.collect.android.R;
-import org.odk.collect.android.preferences.PreferencesActivity;
-import org.odk.collect.android.utilities.FileUtils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,16 +8,12 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Window;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.ImageView.ScaleType;
+
+import org.odk.collect.android.R;
+import org.odk.collect.android.preferences.PreferencesActivity;
 
 public class SplashScreenActivity extends Activity {
 

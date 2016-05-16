@@ -14,12 +14,13 @@
 
 package org.smap.smapTask.android.taskModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
+
 import org.odk.collect.android.database.TaskAssignment;
 import org.smap.smapTask.android.loaders.PointEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TaskResponse {
 

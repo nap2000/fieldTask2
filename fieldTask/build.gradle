@@ -16,7 +16,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -62,26 +62,10 @@ repositories {
 }
 
 dependencies {
-    //compile 'com.android.support:support-v4:23.0.0'
-    //compile files('libs/android_maps_lib-1.1.1.jar')
-    //compile files('libs/apache-mime4j-0.6.jar')
-    //compile files('libs/gson-2.2.2.jar')
-    //compile files('libs/httpmime-4.0.jar')
-    //compile files('libs/joda-time-2.0.jar')
-    //compile files('libs/regexp-me.jar')
+
     compile project(':oDK14_lib')
     compile 'com.google.android.gms:play-services:4.1.32'
-    //compile project(':MapboxAndroidSDK')
-    //compile project(':playservices')
-    //compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:2.1.0@aar'){
-    //    transitive=true
-    //}
-    //compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.5-SNAPSHOT@aar'){
-    //    transitive=true
-    //}
-    //compile 'com.google.android.gms:play-services:4.1.32'
-
-    //tasks.withType(JavaCompile) {
-    //    options.compilerArgs <<  "-Xlint:unchecked"
-    //}
+    compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:4.0.1@aar'){
+        transitive=true
+    }
 }

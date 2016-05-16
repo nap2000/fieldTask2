@@ -1,8 +1,8 @@
 package org.smap.smapTask.android.taskModel;
 
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class UserDetailResponse {
 

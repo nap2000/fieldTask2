@@ -16,8 +16,6 @@ package org.smap.smapTask.android.listeners;
 
 import java.util.HashMap;
 
-import android.os.Bundle;
-
 /**
  * @author Neil Penman (neilpenman@gmail.com)
  */

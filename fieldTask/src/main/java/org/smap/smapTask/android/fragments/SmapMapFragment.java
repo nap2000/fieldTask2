@@ -1,58 +1,42 @@
 package org.smap.smapTask.android.fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.util.Log;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-
 
 import org.odk.collect.android.utilities.InfoLogger;
 import org.smap.smapTask.android.R;
-import org.smap.smapTask.android.activities.MainListActivity;
 import org.smap.smapTask.android.activities.MainTabsActivity;
-import org.smap.smapTask.android.utilities.Utilities;
+import org.smap.smapTask.android.loaders.PointEntry;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.smap.smapTask.android.loaders.MapDataLoader;
-import org.smap.smapTask.android.loaders.MapEntry;
-import org.smap.smapTask.android.loaders.PointEntry;
-import org.smap.smapTask.android.loaders.TaskEntry;
-
-import static org.smap.smapTask.android.R.drawable;
-
-public class MapFragment extends Fragment implements  LocationListener, OnMarkerDragListener, OnMapLongClickListener
+public class SmapMapFragment implements  LocationListener, OnMarkerDragListener, OnMapLongClickListener
 {
 
     private static final String TAG = "MapFragment";
@@ -102,31 +86,12 @@ public class MapFragment extends Fragment implements  LocationListener, OnMarker
         mainTabsActivity = activity;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-
-        View view = inflater.inflate(R.layout.map_layout, container, false);
-
-        // TODO Create icons
-
-        //getLoaderManager().initLoader(MAP_LOADER_ID, null, this);       // Get the task locations
-
-
-        return view;
-    }
-
-
-
-
-
-
     /**
      * Method to show settings  in alert dialog
      * On pressing Settings button will launch Settings Options - GPS
      */
     public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mainTabsActivity);
 
         // Setting Dialog Title
         alertDialog.setTitle("GPS settings");
@@ -138,7 +103,7 @@ public class MapFragment extends Fragment implements  LocationListener, OnMarker
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                getActivity().startActivity(intent);
+                mainTabsActivity.startActivity(intent);
             }
         });
 
@@ -505,7 +470,7 @@ public class MapFragment extends Fragment implements  LocationListener, OnMarker
 
 
         if (mLocation != null) {
-            mLocationStatus.setText(getString(org.odk.collect.android.R.string.location_provider_accuracy, mLocation.getProvider(), truncateFloat(mLocation.getAccuracy())));
+            mLocationStatus.setText(mainTabsActivity.getString(org.odk.collect.android.R.string.location_provider_accuracy, mLocation.getProvider(), truncateFloat(mLocation.getAccuracy())));
             if (!mCaptureLocation & !setClear){
                 mLatLng = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
                 mMarkerOption.position(mLatLng);

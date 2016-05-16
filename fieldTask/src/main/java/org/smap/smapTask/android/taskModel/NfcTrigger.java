@@ -17,8 +17,6 @@
  */
 package org.smap.smapTask.android.taskModel;
 
-import org.smap.smapTask.android.loaders.TaskEntry;
-
 public class NfcTrigger {
 	public String uid;
 	public long tId;

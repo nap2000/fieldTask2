@@ -14,9 +14,9 @@
 
 package org.smap.smapTask.android.listeners;
 
-import java.util.ArrayList;
-
 import org.smap.smapTask.android.utilities.UploadStatus;
+
+import java.util.ArrayList;
 
 /**
  * @author Carl Hartung (carlhartung@gmail.com)

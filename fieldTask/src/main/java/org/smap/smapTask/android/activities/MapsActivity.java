@@ -15,28 +15,22 @@
 
 package org.smap.smapTask.android.activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.preferences.PreferencesActivity;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+
 import org.smap.smapTask.android.R;
-import org.smap.smapTask.android.fragments.MapFragment;
+import org.smap.smapTask.android.fragments.SmapMapFragment;
 import org.smap.smapTask.android.loaders.MapLocationObserver;
-import org.smap.smapTask.android.utilities.TraceUtilities;
-import org.smap.smapTask.android.utilities.Utilities;
 
 /**
  * Responsible for displaying maps of tasks.
@@ -47,23 +41,32 @@ public class MapsActivity extends FragmentActivity  {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private MapFragment map = null;
+    private SmapMapFragment mapManager = null;
     private MapLocationObserver mo = null;
+    private GoogleMap mMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Insert the fragment by replacing any existing fragment
-        FragmentManager fm = getSupportFragmentManager();
-        if (fm.findFragmentById(R.id.map_content_frame) == null) {
-            map = new MapFragment();
-            map.setTabsActivity((MainTabsActivity) getParent());
-            fm.beginTransaction().add(android.R.id.content, map).commit();
-
-            // Listen for new locations
-            mo = new MapLocationObserver(getApplicationContext(), map);
+        setContentView(R.layout.map_layout);
+        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+        if ( mMap == null ) {
+            Toast.makeText(getBaseContext(), getString(org.odk.collect.android.R.string.google_play_services_error_occured),
+                    Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
+
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        mapManager = new SmapMapFragment();
+        mapManager.setTabsActivity((MainTabsActivity) getParent());
+        // Listen for new locations
+        mo = new MapLocationObserver(getApplicationContext(), mapManager);
+
 
 
     }
@@ -81,7 +84,7 @@ public class MapsActivity extends FragmentActivity  {
         Log.i("mapsActivity", "---------------- onResume");
         super.onResume();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //map.setUserLocation(Collect.getInstance().getLocation(), false);
+        //mapManager.setUserLocation(Collect.getInstance().getLocation(), false);
     }
 
     @Override

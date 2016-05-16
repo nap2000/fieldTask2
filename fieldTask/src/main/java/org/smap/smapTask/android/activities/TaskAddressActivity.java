@@ -13,18 +13,6 @@
  */
 package org.smap.smapTask.android.activities;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-
-import org.odk.collect.android.activities.FormEntryActivity;
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
-import org.smap.smapTask.android.R;
-import org.smap.smapTask.android.utilities.Utilities;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -43,7 +31,18 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.odk.collect.android.activities.FormEntryActivity;
+import org.odk.collect.android.application.Collect;
+import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
+import org.smap.smapTask.android.R;
 import org.smap.smapTask.android.loaders.TaskEntry;
+import org.smap.smapTask.android.utilities.Utilities;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class TaskAddressActivity extends Activity implements OnClickListener {
 
