@@ -9,15 +9,18 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import org.smap.smapTask.android.fragments.SmapMapFragment;
+import org.odk.collect.android.application.Collect;
+import org.odk.collect.android.preferences.PreferencesActivity;
+import org.smap.smapTask.android.activities.MapsActivity;
+import org.smap.smapTask.android.fragments.MapFragment;
 
 
 public class MapLocationObserver extends BroadcastReceiver {
 
-    private SmapMapFragment mMap = null;
+    private MapsActivity mMap = null;
     SharedPreferences settings = null;
 
-public MapLocationObserver(Context context, SmapMapFragment map) {
+public MapLocationObserver(Context context, MapsActivity map) {
     mMap = map;
 
     settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -28,7 +31,7 @@ public MapLocationObserver(Context context, SmapMapFragment map) {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-      Log.i("Maps Activity: ", "++++++++received refresh");
-      //mMap.setUserLocation(Collect.getInstance().getLocation(), settings.getBoolean(PreferencesActivity.KEY_STORE_USER_TRAIL, false)); TODO
+      Log.i("Maps Activity: ", "++++++++received location change");
+      mMap.setUserLocation(Collect.getInstance().getLocation(), settings.getBoolean(PreferencesActivity.KEY_STORE_USER_TRAIL, false));
   }
 }

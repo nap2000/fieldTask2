@@ -18,4 +18,5 @@
 	<string translatable="false" name="default_username">gplay</string>
 	<string translatable="false" name="default_password">gplay</string>
 	<string translatable="false" name="app_url">http://blog.smap.com.au</string>
+    <string translatable="false" name="accessToken">pk.eyJ1IjoibmFwMjAwMCIsImEiOiJjaWc1a3ZqdWI0NHJ4c3prdzZzM2k5YzhjIn0.QA_G2TYCN0fJM3VcZpLlOg</string>
 </resources>

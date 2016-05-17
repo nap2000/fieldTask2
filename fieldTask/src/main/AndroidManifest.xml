@@ -280,6 +280,8 @@
             android:name="com.google.android.maps"
             android:required="false" />
 
+        <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" />
+
     </application>
 
 </manifest>

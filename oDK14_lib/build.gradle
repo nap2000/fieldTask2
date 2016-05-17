@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         // applicationId "org.odk.collect.android"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 19
     }
 

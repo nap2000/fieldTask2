@@ -85,7 +85,7 @@ public class MainListActivity extends FragmentActivity  {
 	 * Fragment to display list of tasks
 	 */
 	 public static class TaskListFragment extends ListFragment implements
-     		LoaderManager.LoaderCallbacks<List<TaskEntry>> { 
+     		LoaderManager.LoaderCallbacks<List<TaskEntry>> {
 	
 		private static final int TASK_LOADER_ID = 1;
 		
