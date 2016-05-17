@@ -17,10 +17,10 @@ import org.smap.smapTask.android.fragments.MapFragment;
 
 public class MapLocationObserver extends BroadcastReceiver {
 
-    private MapsActivity mMap = null;
+    private MapFragment mMap = null;
     SharedPreferences settings = null;
 
-public MapLocationObserver(Context context, MapsActivity map) {
+public MapLocationObserver(Context context, MapFragment map) {
     mMap = map;
 
     settings = PreferenceManager.getDefaultSharedPreferences(context);

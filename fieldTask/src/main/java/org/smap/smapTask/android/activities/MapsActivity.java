@@ -71,397 +71,45 @@ import java.util.List;
  * 
  * @author Neil Penman 
  */
-public class MapsActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<MapEntry> {
-
-    private LocationListener locationListener;
-    private MapLocationObserver mo = null;
-    private static MainTabsActivity tabsActivity;
-    private MapsActivity mapsActivity = null;
-    private MapView mv;
-    private MapboxMap map;
-
-    ItemizedIconOverlay markerOverlay = null;
-    ArrayList<Marker> markers = null;
-    HashMap<Marker, Integer> markerMap = null;
-    private double tasksNorth;
-    private double tasksSouth;
-    private double tasksEast;
-    private double tasksWest;
-
-    Marker userLocationMarker = null;
-    Icon userLocationIcon = null;
-    Icon accepted = null;
-    Icon repeat = null;
-    Icon rejected = null;
-    Icon complete = null;
-    Icon submitted = null;
-    Icon triggered = null;
-    Icon triggered_repeat = null;
-
-    PathOverlay po = null;
-    private PointEntry lastPathPoint;
-
-    private static final String TAG = "MapsActivity";
-    private static final int MAP_LOADER_ID = 2;
+public class MapsActivity extends FragmentActivity  {
 
     private LocationManager locationManager;
-    protected PendingIntent locationListenerPendingIntent;
+    private LocationListener locationListener;
+    private MapFragment map = null;
+    private MapLocationObserver mo = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mapsActivity = this;
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.findFragmentById(R.id.map_content_frame) == null) {
+            map = new MapFragment();
+            map.setTabsActivity((MainTabsActivity) getParent());
+            fm.beginTransaction().add(android.R.id.content, map).commit();
 
-        setContentView(R.layout.map);
-        mv = (MapView) findViewById(R.id.mapView);
-        mv.onCreate(savedInstanceState);
-        mv.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(MapboxMap mapboxMap) {
-
-                map = mapboxMap;
-                tabsActivity = (MainTabsActivity) getParent();
-
-                // Create icons
-                IconFactory iconFactory = IconFactory.getInstance(mapsActivity);
-                userLocationIcon = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_userlocation));
-                accepted = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_open));
-                repeat = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_repeat));
-                rejected = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_reject));
-                complete = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_done));
-                submitted = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_submitted));
-                triggered = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_triggered));
-                triggered_repeat = iconFactory.fromDrawable(ContextCompat.getDrawable(mapsActivity, R.drawable.ic_task_triggered_repeat));
-
-                // Customize map with markers, polylines, etc.
-                mo = new MapLocationObserver(getApplicationContext(), mapsActivity);
-                Intent activeIntent = new Intent(mapsActivity, LocationChangedReceiver.class);
-                locationListenerPendingIntent = PendingIntent.getBroadcast(mapsActivity, 1000, activeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                getLoaderManager().initLoader(MAP_LOADER_ID, null, mapsActivity);       // Get the task locations
-            }
-        });
-
-    }
-
-    ItemizedIconOverlay.OnItemGestureListener<Marker> onItemGestureListener
-            = new ItemizedIconOverlay.OnItemGestureListener<Marker>(){
-
-        @Override
-        public boolean onItemLongPress(int arg0, Marker item) {
-            return processTouch(item);
+            // Listen for new locations
+            mo = new MapLocationObserver(getApplicationContext(), map);
         }
-
-        @Override
-        public boolean onItemSingleTapUp(int index, Marker item) {
-            return processTouch(item);
-        }
-
-        public boolean processTouch(Marker item) {
-
-            Integer iPos = markerMap.get(item);
-
-            Log.i(TAG, "process Touch");
-            if(iPos != null) {
-                /*
-                int position = iPos;
-                List<TaskEntry> mapTasks = mainTabsActivity.getMapTasks();
-                TaskEntry entry = mapTasks.get(position);
-
-                if(entry.locationTrigger != null) {
-                    Toast.makeText(
-                            getActivity(),
-                            getString(R.string.smap_must_start_from_nfc),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    mainTabsActivity.completeTask(entry);
-                }
-
-                */
-            }
-
-            return true;
-        }
-
-    };
-
-    /*
-     * Update the user location
-     */
-    public void setUserLocation(Location location, boolean recordLocation) {
-        Log.i(TAG, "setUserLocation()");
-
-        if(location != null && map != null) {
-            LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-
-            if (markers == null) {
-                markers = new ArrayList<Marker>();
-            }
-            if (userLocationMarker == null) {
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(point)
-                        .title("you")
-                        .snippet("your location")
-                        .icon(userLocationIcon);
-
-                userLocationMarker = new Marker(markerOptions);
-                map.addMarker(markerOptions);
-
-                /*
-                if (markerOverlay == null) {
-                    markers.add(userLocationMarker);
-                    markerOverlay = new ItemizedIconOverlay(mapsActivity, markers, onItemGestureListener);
-                    //mv.getOverlays().add(markerOverlay);
-                } else {
-                    //markerOverlay.addItem(userLocationMarker);
-                }
-                */
-            } else {
-                // userLocationMarker.setPoint(point);
-                //userLocationMarker.updateDrawingPosition();
-                userLocationMarker.setIcon(userLocationIcon);
-            }
-            if (recordLocation) {
-                // updatePath(point);  TODO
-            }
-            zoomToData(true);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<MapEntry> loader) {
-        clearTasks();
-    }
-
-    @Override
-    public Loader<MapEntry> onCreateLoader(int id, Bundle args) {
-        return new MapDataLoader(mapsActivity);
-    }
-
-    private void zoomToData(boolean userLocationChanged) {
-
-        Log.i(TAG, "zoomToData");
-
-        boolean userOutsideBoundingBox = false;
-        double north = tasksNorth;
-        double south = tasksSouth;
-        double east = tasksEast;
-        double west = tasksWest;
-
-        // Add current location to bounding box
-        if(userLocationMarker != null) {
-
-            /*
-            LatLngBounds latLngBounds = new LatLngBounds.Builder().
-                    include(userLocationMarker.getPosition()).build();
-
-            map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10), 7000);
-            */
-            CameraPosition position = new CameraPosition.Builder()
-                    .target(userLocationMarker.getPosition()) // Sets the new camera position
-                    .zoom(17) // Sets the zoom
-                    .build();
-
-
-            map.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 7000);
-           // double lat = userLocationMarker.getPosition().getLatitude();
-           // double lon = userLocationMarker.getPosition().getLongitude();
-
-            /*
-            if(lat > north) {
-                north = lat;
-            }
-            if(lat < south) {
-                south = lat;
-            }
-            if(lon > east) {
-                east = lon;
-            }
-            if(lon < west) {
-                west = lon;
-            }
-            */
-
-            /*
-            if(userLocationChanged) {
-                Rect viewableBox = mv.getClipBounds();
-                if(viewableBox != null) {
-                    if(!viewableBox.contains(userLocationMarker.getPosition()))
-                    if (lat > viewableBox.getLatNorth() ||
-                            lat < viewableBox.getLatSouth() ||
-                            lon > viewableBox.getLonEast() ||
-                            lon < viewableBox.getLonWest()
-                            ) {
-                        userOutsideBoundingBox = true;
-                    }
-                } else {
-                    userOutsideBoundingBox = true;      // User location being set on resume of activity
-                }
-            }
-            */
-
-        }
-
-        // Add last path point to bounding box
-        /*
-        if(lastPathPoint != null) {
-            double lat = lastPathPoint.lat;
-            double lon = lastPathPoint.lon;
-            if(lat > north) {
-                north = lat;
-            }
-            if(lat < south) {
-                south = lat;
-            }
-            if(lon > east) {
-                east = lon;
-            }
-            if(lon < west) {
-                west = lon;
-            }
-
-        }
-
-        // Make sure bounding box is not a point
-        if(north == south) {
-            north += 0.01;
-            south -= 0.01;
-        }
-        if(east == west) {
-            east += 0.01;
-            west -= 0.01;
-        }
-        */
-
-        /*
-         * Zoom to the new bounding box only if the task list has changed or the user is outside of the current
-         *  viewable area
-         *
-        if(north > south && east > west) {
-            if(!userLocationChanged || userOutsideBoundingBox) {
-                BoundingBox bb = new BoundingBox(north, east, south, west);
-                mv.zoomToBoundingBox(bb, true, true, true, true);
-                mv.fit
-            }
-        }
-        */
 
 
     }
-
-    private void clearTasks() {
-        if(markerOverlay != null) {
-            markerOverlay.removeAllItems();
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<MapEntry> loader, MapEntry data) {
-        Log.i(TAG, "######### Load Finished");
-        tabsActivity.setLocationTriggers(data.tasks, true);
-        showTasks(data.tasks);
-        //showPoints(data.points);  TODO
-        zoomToData(false);
-    }
-
-    private void showTasks(List<TaskEntry> data) {
-
-        tasksNorth = -90.0;
-        tasksSouth = 90.0;
-        tasksEast = -180.0;
-        tasksWest = 180.0;
-
-        markers = new ArrayList<Marker> ();
-        markerMap = new HashMap<Marker, Integer> ();
-
-        // Add the user location
-        if(userLocationMarker != null) {
-            markers.add(userLocationMarker);
-        }
-
-        // Add the tasks to the marker array
-        int index = 0;
-        for(TaskEntry t : data) {
-            if(t.type.equals("task")) {
-                LatLng ll = getTaskCoords(t);
-                if (ll != null) {
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(ll)
-                            .title("task")
-                            .snippet("Some task");
-
-                    markerOptions.icon(getIcon(t.taskStatus, t.repeat, t.locationTrigger != null));
-
-                    Marker m = new Marker(markerOptions);
-
-                    markers.add(m);
-                    markerMap.put(m, index);
-                }
-            }
-            index++;
-        }
-
-        // Remove any existing markers
-        if(markerOverlay != null) {
-            markerOverlay.removeAllItems();
-        }
-
-        // Add the marker layer
-        if(markers.size() > 0) {
-            if (markerOverlay == null) {
-                markerOverlay = new ItemizedIconOverlay(mapsActivity, markers, onItemGestureListener);
-                //mv.getOverlays().add(markerOverlay);
-            } else {
-                markerOverlay.addItems(markers);
-            }
-        }
-
-    }
-
-    /*
-    * Get the icon to represent the passed in task status
-    */
-    private Icon getIcon(String status, boolean isRepeat, boolean hasTrigger) {
-
-        if(status.equals(Utilities.STATUS_T_REJECTED) || status.equals(Utilities.STATUS_T_CANCELLED)) {
-            return rejected;
-        } else if(status.equals(Utilities.STATUS_T_ACCEPTED)) {
-            if(hasTrigger && !isRepeat) {
-                return triggered;
-            } else if (hasTrigger && isRepeat) {
-                return triggered_repeat;
-            } else if(isRepeat) {
-                return repeat;
-            } else {
-                return accepted;
-            }
-        } else if(status.equals(Utilities.STATUS_T_COMPLETE)) {
-            return complete;
-        } else if(status.equals(Utilities.STATUS_T_SUBMITTED)) {
-            return submitted;
-        } else {
-            Log.i(TAG, "Unknown task status: " + status);
-            return accepted;
-        }
-    }
-
 
     @Override
     protected void onPause() {
         Log.i("mapsActivity", "---------------- onPause");
         super.onPause();
-        mv.onPause();
-
+        map.onPause();
     }
 
     @Override
     protected void onResume() {
         Log.i("mapsActivity", "---------------- onResume");
         super.onResume();
-        mv.onResume();
-        //map.setUserLocation(Collect.getInstance().getLocation(), false);
+        map.onResume();
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        map.setUserLocation(Collect.getInstance().getLocation(), false);
     }
 
     @Override
@@ -474,7 +122,6 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     protected void onStart() {
         super.onStart();
-
         Log.i("mapsActivity", "---------------- onStart");
 
     }
@@ -482,54 +129,15 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mv.onLowMemory();
+        map.onLowMemory();
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mv.onDestroy();
+        map.onDestroy();
     }
 
-    /*
- * Get the coordinates of the task and update the bounding box
- */
-    private LatLng getTaskCoords(TaskEntry t) {
 
-        double lat = 0.0;
-        double lon = 0.0;
-        LatLng locn = null;
-
-        if((t.actLat == 0.0) && (t.actLon == 0.0)) {
-            lat = t.schedLat;       // Scheduled coordinates of task
-            lon = t.schedLon;
-        } else  {
-            lat = t.actLat;         // Actual coordinates of task
-            lon = t.actLon;
-        }
-
-        if(lat != 0.0 && lon != 0.0) {
-            // Update bounding box
-            if(lat > tasksNorth) {
-                tasksNorth = lat;
-            }
-            if(lat < tasksSouth) {
-                tasksSouth = lat;
-            }
-            if(lon > tasksEast) {
-                tasksEast = lon;
-            }
-            if(lat < tasksWest) {
-                tasksWest = lon;
-            }
-
-            // Create Point
-            locn = new LatLng(lat, lon);
-        }
-
-
-        return locn;
-    }
-	
 }

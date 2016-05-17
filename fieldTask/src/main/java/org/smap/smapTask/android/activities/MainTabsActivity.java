@@ -165,7 +165,6 @@ public class MainTabsActivity extends TabActivity implements
 	    /*
 	     * Initialise a Map tab
 	     */
-
         Log.i(TAG, "Creating Maps Activity");
 	    intent = new Intent().setClass(this, MapsActivity.class);
 	    spec = tabHost.newTabSpec("taskMap").setIndicator(getString(R.string.smap_taskMap)).setContent(intent);

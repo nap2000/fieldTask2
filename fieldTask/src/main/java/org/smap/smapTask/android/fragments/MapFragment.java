@@ -1,6 +1,7 @@
 package org.smap.smapTask.android.fragments;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -24,17 +25,24 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.Marker;
 
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.smap.smapTask.android.R;
 import org.smap.smapTask.android.activities.MainListActivity;
 import org.smap.smapTask.android.activities.MainTabsActivity;
+import org.smap.smapTask.android.loaders.MapLocationObserver;
+import org.smap.smapTask.android.receivers.LocationChangedReceiver;
 import org.smap.smapTask.android.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -74,8 +82,10 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
     Icon triggered_repeat = null;
 
     private static MainTabsActivity mainTabsActivity;
-
+    private static MapFragment thisActvity;
     private MapView mv;
+    private MapboxMap map;
+
     private static final int MAP_LOADER_ID = 2;
 
     public void setTabsActivity(MainTabsActivity activity) {
@@ -89,45 +99,30 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         mv = (MapView) view.findViewById(R.id.mapview);
 
-        // Create icons
-        IconFactory iconFactory = IconFactory.getInstance(mainTabsActivity);
+        mv.onCreate(savedInstanceState);
+        mv.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapboxMap mapboxMap) {
 
-        userLocationIcon = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, R.drawable.ic_userlocation));
-        accepted = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, R.drawable.ic_task_open));
-        repeat = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_repeat));
-        rejected = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_reject));
-        complete = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_done));
-        submitted = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_submitted));
-        triggered = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_triggered));
-        triggered_repeat = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_triggered_repeat));
+                // Customize map with markers, polylines, etc.
+                IconFactory iconFactory = IconFactory.getInstance(mainTabsActivity);
 
+                userLocationIcon = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, R.drawable.ic_userlocation));
+                accepted = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, R.drawable.ic_task_open));
+                repeat = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_repeat));
+                rejected = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_reject));
+                complete = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_done));
+                submitted = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_submitted));
+                triggered = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_triggered));
+                triggered_repeat = iconFactory.fromDrawable(ContextCompat.getDrawable(mainTabsActivity, drawable.ic_task_triggered_repeat));
 
-        //userLocationIcon = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_userlocation)));
-        //accepted = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_open)));
-        //repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_repeat)));
-        //rejected = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_reject)));
-        //complete = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_done)));
-        //submitted = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_submitted)));
-        //triggered = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered)));
-        //triggered_repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered_repeat)));
-        // Set Default Map Type
-        replaceMapView("mapquest");
+                //replaceMapView("mapquest");
 
-        getLoaderManager().initLoader(MAP_LOADER_ID, null, this);       // Get the task locations
+                getLoaderManager().initLoader(MAP_LOADER_ID, null, thisActvity);       // Get the task locations
+            }
+        });
 
 
-        //mv.setOnTilesLoadedListener(new TilesLoadedListener() {
-        //    @Override
-        //    public boolean onTilesLoaded() {
-        //        return false;
-        //    }
-
-        //@Override
-        //public boolean onTilesLoadStarted() {
-        //    // TODO Auto-generated method stub
-        //    return false;
-        //}
-        //});
         mv.setVisibility(View.VISIBLE);
 
         return view;
@@ -135,6 +130,7 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<MapEntry> loader, MapEntry data) {
+        Log.i(TAG, "######### Load Finished");
         mainTabsActivity.setLocationTriggers(data.tasks, true);
         showTasks(data.tasks);
         showPoints(data.points);
@@ -260,11 +256,17 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             if(t.type.equals("task")) {
                 LatLng ll = getTaskCoords(t);
                 if (ll != null) {
-                    //Marker m = new Marker(mv, t.name, t.taskAddress, ll);
-                    //m.setIcon(getIcon(t.taskStatus, t.repeat, t.locationTrigger != null));
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(ll)
+                            .title("task")
+                            .snippet("Some task");
 
-                    //markers.add(m);
-                    //markerMap.put(m, index);
+                    markerOptions.icon(getIcon(t.taskStatus, t.repeat, t.locationTrigger != null));
+
+                    Marker m = new Marker(markerOptions);
+
+                    markers.add(m);
+                    markerMap.put(m, index);
                 }
             }
             index++;
@@ -340,6 +342,8 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
     private void zoomToData(boolean userLocationChanged) {
 
+        Log.i(TAG, "zoomToData");
+
         boolean userOutsideBoundingBox = false;
         double north = tasksNorth;
         double south = tasksSouth;
@@ -348,10 +352,25 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
         // Add current location to bounding box
         if(userLocationMarker != null) {
-            /*
-            double lat = userLocationMarker.getPoint().getLatitude();
-            double lon = userLocationMarker.getPoint().getLongitude();
 
+            /*
+            LatLngBounds latLngBounds = new LatLngBounds.Builder().
+                    include(userLocationMarker.getPosition()).build();
+
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10), 7000);
+            */
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(userLocationMarker.getPosition()) // Sets the new camera position
+                    .zoom(17) // Sets the zoom
+                    .build();
+
+
+            map.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 7000);
+            // double lat = userLocationMarker.getPosition().getLatitude();
+            // double lon = userLocationMarker.getPosition().getLongitude();
+
+            /*
             if(lat > north) {
                 north = lat;
             }
@@ -364,10 +383,13 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             if(lon < west) {
                 west = lon;
             }
+            */
 
+            /*
             if(userLocationChanged) {
-                BoundingBox viewableBox = mv.getBoundingBox();
+                Rect viewableBox = mv.getClipBounds();
                 if(viewableBox != null) {
+                    if(!viewableBox.contains(userLocationMarker.getPosition()))
                     if (lat > viewableBox.getLatNorth() ||
                             lat < viewableBox.getLatSouth() ||
                             lon > viewableBox.getLonEast() ||
@@ -380,9 +402,11 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
                 }
             }
             */
+
         }
 
         // Add last path point to bounding box
+        /*
         if(lastPathPoint != null) {
             double lat = lastPathPoint.lat;
             double lon = lastPathPoint.lon;
@@ -410,17 +434,22 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             east += 0.01;
             west -= 0.01;
         }
+        */
 
         /*
          * Zoom to the new bounding box only if the task list has changed or the user is outside of the current
          *  viewable area
-         */
+         *
         if(north > south && east > west) {
             if(!userLocationChanged || userOutsideBoundingBox) {
-                //BoundingBox bb = new BoundingBox(north, east, south, west);
-                //mv.zoomToBoundingBox(bb, true, true, true, true);
+                BoundingBox bb = new BoundingBox(north, east, south, west);
+                mv.zoomToBoundingBox(bb, true, true, true, true);
+                mv.fit
             }
         }
+        */
+
+
     }
 
     /*
@@ -531,6 +560,50 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         }
 
     };
+
+    /*
+ * Update the user location
+ */
+    public void setUserLocation(Location location, boolean recordLocation) {
+        Log.i(TAG, "setUserLocation()");
+
+        if(location != null && map != null) {
+            LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
+
+            if (markers == null) {
+                markers = new ArrayList<Marker>();
+            }
+            if (userLocationMarker == null) {
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(point)
+                        .title("you")
+                        .snippet("your location")
+                        .icon(userLocationIcon);
+
+                userLocationMarker = new Marker(markerOptions);
+                map.addMarker(markerOptions);
+
+                /*
+                if (markerOverlay == null) {
+                    markers.add(userLocationMarker);
+                    markerOverlay = new ItemizedIconOverlay(mapsActivity, markers, onItemGestureListener);
+                    //mv.getOverlays().add(markerOverlay);
+                } else {
+                    //markerOverlay.addItem(userLocationMarker);
+                }
+                */
+            } else {
+                // userLocationMarker.setPoint(point);
+                //userLocationMarker.updateDrawingPosition();
+                userLocationMarker.setIcon(userLocationIcon);
+            }
+            if (recordLocation) {
+                // updatePath(point);  TODO
+            }
+            zoomToData(true);
+        }
+    }
+
 
     public void onResume() {
         mv.onResume();
