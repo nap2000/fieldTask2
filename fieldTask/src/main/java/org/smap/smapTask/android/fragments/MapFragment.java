@@ -32,6 +32,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.Marker;
 
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -98,11 +99,14 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         mv = (MapView) view.findViewById(R.id.mapview);
+        thisActvity = this;
 
         mv.onCreate(savedInstanceState);
         mv.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
+
+                map = mapboxMap;
 
                 // Customize map with markers, polylines, etc.
                 IconFactory iconFactory = IconFactory.getInstance(mainTabsActivity);
@@ -119,6 +123,7 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
                 //replaceMapView("mapquest");
 
                 getLoaderManager().initLoader(MAP_LOADER_ID, null, thisActvity);       // Get the task locations
+                map.setMyLocationEnabled(true);
             }
         });
 
@@ -237,20 +242,14 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
     private void showTasks(List<TaskEntry> data) {
 
-        tasksNorth = -90.0;
-        tasksSouth = 90.0;
-        tasksEast = -180.0;
-        tasksWest = 180.0;
 
+        clearTasks();   // remove existing markers
+
+        // Update markers
         markers = new ArrayList<Marker> ();
         markerMap = new HashMap<Marker, Integer> ();
 
-        // Add the user location
-        if(userLocationMarker != null) {
-            markers.add(userLocationMarker);
-        }
-
-        // Add the tasks to the marker array
+        // Add the tasks to the marker array and to the map
         int index = 0;
         for(TaskEntry t : data) {
             if(t.type.equals("task")) {
@@ -267,32 +266,21 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
 
                     markers.add(m);
                     markerMap.put(m, index);
+                    map.addMarker(markerOptions);
                 }
             }
             index++;
         }
 
-        // Remove any existing markers
-        if(markerOverlay != null) {
-            markerOverlay.removeAllItems();
-        }
-
-        // Add the marker layer
-        if(markers.size() > 0) {
-            if (markerOverlay == null) {
-                markerOverlay = new ItemizedIconOverlay(getActivity(), markers, onItemGestureListener);
-                //mv.getOverlays().add(markerOverlay);
-            } else {
-                markerOverlay.addItems(markers);
-            }
-        }
 
     }
 
 
     private void clearTasks() {
-        if(markerOverlay != null) {
-            markerOverlay.removeAllItems();
+        if(markers != null && markers.size() > 0) {
+            for (int i = 0; i < markers.size(); i++) {
+                map.removeMarker(markers.get(i));
+            }
         }
     }
 
@@ -350,23 +338,46 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         double east = tasksEast;
         double west = tasksWest;
 
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        int locationCount = 0;
+        LatLng aPosition = null;        // Used to zoom to a single location of there are no bounds
+
+        if(markers.size() > 0) {
+            for(int i = 0; i < markers.size(); i++) {
+                aPosition = markers.get(i).getPosition();
+                builder.include(aPosition);
+                locationCount++;
+            }
+        }
+
         // Add current location to bounding box
         if(userLocationMarker != null) {
+            aPosition = userLocationMarker.getPosition();
+            builder.include(aPosition);
+            locationCount++;
+        }
 
+        if(locationCount == 1) {
+
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(aPosition) // Sets the new camera position
+                    .zoom(17) // Sets the zoom
+                    .build();
+
+            map.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 7000);
+
+        } else if(locationCount > 1){
+            LatLngBounds latLngBounds = builder.build();
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10), 7000);
+        }
             /*
             LatLngBounds latLngBounds = new LatLngBounds.Builder().
                     include(userLocationMarker.getPosition()).build();
 
             map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10), 7000);
             */
-            CameraPosition position = new CameraPosition.Builder()
-                    .target(userLocationMarker.getPosition()) // Sets the new camera position
-                    .zoom(17) // Sets the zoom
-                    .build();
 
-
-            map.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 7000);
             // double lat = userLocationMarker.getPosition().getLatitude();
             // double lon = userLocationMarker.getPosition().getLongitude();
 
@@ -403,7 +414,7 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
             }
             */
 
-        }
+
 
         // Add last path point to bounding box
         /*
@@ -570,9 +581,6 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         if(location != null && map != null) {
             LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
 
-            if (markers == null) {
-                markers = new ArrayList<Marker>();
-            }
             if (userLocationMarker == null) {
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(point)
@@ -581,21 +589,13 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
                         .icon(userLocationIcon);
 
                 userLocationMarker = new Marker(markerOptions);
-                map.addMarker(markerOptions);
+                //map.addMarker(markerOptions);
 
-                /*
-                if (markerOverlay == null) {
-                    markers.add(userLocationMarker);
-                    markerOverlay = new ItemizedIconOverlay(mapsActivity, markers, onItemGestureListener);
-                    //mv.getOverlays().add(markerOverlay);
-                } else {
-                    //markerOverlay.addItem(userLocationMarker);
-                }
-                */
             } else {
                 // userLocationMarker.setPoint(point);
                 //userLocationMarker.updateDrawingPosition();
-                userLocationMarker.setIcon(userLocationIcon);
+                userLocationMarker.setPosition(point);
+
             }
             if (recordLocation) {
                 // updatePath(point);  TODO
@@ -605,19 +605,21 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
     }
 
 
-    public void onResume() {
+    public void resumeMap() {
         mv.onResume();
     }
 
-    public void onPause() {
+    public void pauseMap() {
         mv.onPause();
     }
 
-    public void onLowMemory() {
+    public void lowMemoryMap() {
+
         mv.onLowMemory();
     }
 
-    public void onDestroy() {
+    public void destroyMap() {
+
         mv.onDestroy();
     }
 
