@@ -20,6 +20,7 @@
 package org.smap.smapTask.android.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,10 +100,15 @@ public class TaskListArrayAdapter extends ArrayAdapter<TaskEntry> {
 	    	} else {
                 String line2 = null;
                 long theTime = 0;
+                Log.i(TAG, "task status: " + item.taskStatus);
+                Log.i(TAG, "actual finish: " + item.actFinish);
+                Log.i(TAG, "task start: " + item.taskStart);
                 if(item.taskStatus.equals(Utilities.STATUS_T_COMPLETE) || item.taskStatus.equals(Utilities.STATUS_T_SUBMITTED)) {
                     theTime = item.actFinish;
-                } else if (item.taskStart != 0) {
+                } else if (item.taskStart >  0) {
                     theTime = item.taskStart;
+                } else {
+                    theTime = item.actFinish;
                 }
 
                 df.setTimeZone(TimeZone.getDefault());

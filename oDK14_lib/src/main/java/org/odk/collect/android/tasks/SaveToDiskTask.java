@@ -157,7 +157,7 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
 
     private void updateInstanceDatabase(boolean incomplete, boolean canEditAfterCompleted, boolean canUpdate) {     // smap
 
-    	String source = null;
+    	String source = null;       // smap
         FormController formController = Collect.getInstance().getFormController();
 
         // Update the instance database...

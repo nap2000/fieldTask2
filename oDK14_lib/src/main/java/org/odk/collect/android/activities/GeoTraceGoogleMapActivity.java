@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 University of Washington
+ * Copyright (C) 2015 Nafundi
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -574,7 +574,7 @@ public class GeoTraceGoogleMapActivity extends FragmentActivity implements Locat
 
 	public void setGeoTraceMode(View view){
 		boolean checked = ((RadioButton) view).isChecked();
-        int id = view.getId();
+        int id = view.getId();                  // smap android studio complains if this is a switch statement
 		if (id == R.id.trace_manual) {
             if (checked) {
                 TRACE_MODE = 0;

@@ -27,7 +27,7 @@ import org.odk.collect.android.utilities.DocumentFetchResult;
 import org.odk.collect.android.utilities.WebUtils;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.net.Uri;                     // smap
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -219,7 +219,7 @@ public class DownloadFormListTask extends AsyncTask<Void, String, HashMap<String
                             R.string.parse_openrosa_formlist_failed, error)));
                     return formList;
                 }
-                formList.put(formId, new FormDetails(formName, downloadUrl, manifestUrl, formId, (version != null) ? version : majorMinorVersion, false));
+                formList.put(formId, new FormDetails(formName, downloadUrl, manifestUrl, formId, (version != null) ? version : majorMinorVersion, false));  // smap add tasks_only=false
             }
         } else {
             // Aggregate 0.9.x mode...
@@ -262,7 +262,7 @@ public class DownloadFormListTask extends AsyncTask<Void, String, HashMap<String
                                 R.string.parse_legacy_formlist_failed, error)));
                         return formList;
                     }
-                    formList.put(formName, new FormDetails(formName, downloadUrl, null, formId, null, false));
+                    formList.put(formName, new FormDetails(formName, downloadUrl, null, formId, null, false));   // smap add tasks only = false
 
                     formId = null;
                 }

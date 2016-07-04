@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Nafundi
+ * Copyright (C) 2015 GeoODK
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -525,7 +525,7 @@ public class GeoTraceOsmMapActivity extends Activity implements IRegisterReceive
 	//This happens on click of the play button
 	public void setGeoTraceMode(View view){
 		boolean checked = ((RadioButton) view).isChecked();
-        int id = view.getId();
+        int id = view.getId();      // smap switch on id not liked by android studio
 		if (id == R.id.trace_manual) {
             if (checked) {
                 TRACE_MODE = 0;
