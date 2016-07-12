@@ -102,7 +102,7 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         triggered = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered)));
         triggered_repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered_repeat)));
         // Set Default Map Type
-        replaceMapView("mapquest");
+        replaceMapView("OpenStreetMap");
 
         getLoaderManager().initLoader(MAP_LOADER_ID, null, this);       // Get the task locations
 
