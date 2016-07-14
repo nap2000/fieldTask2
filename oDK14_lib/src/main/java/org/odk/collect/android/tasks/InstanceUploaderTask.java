@@ -584,7 +584,6 @@ public class InstanceUploaderTask extends AsyncTask<Long, Integer, InstanceUploa
 	                    
 	                    // ---------------- Smap Start
 	                    // Add credentials pre-emptively
-	                    //xxxx
 	                    
 	                    String username = settings.getString(PreferencesActivity.KEY_USERNAME, null);
 	                    String password = settings.getString(PreferencesActivity.KEY_PASSWORD, null);

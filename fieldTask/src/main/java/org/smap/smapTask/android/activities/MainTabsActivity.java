@@ -796,7 +796,7 @@ public class MainTabsActivity extends TabActivity implements
          */
     }
 
-    /*
+/*
  * The user has selected an option to edit / complete a task
  */
     public void completeTask(TaskEntry entry) {

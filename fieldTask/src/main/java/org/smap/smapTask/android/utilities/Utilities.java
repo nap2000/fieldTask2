@@ -194,6 +194,7 @@ public class Utilities {
             values.put(InstanceColumns.SCHED_LAT, entry.schedLat);
             values.put(InstanceColumns.SOURCE, entry.source);
             values.put(InstanceColumns.T_LOCATION_TRIGGER, entry.locationTrigger);
+            values.put(InstanceColumns.T_ASS_ID, entry.assId);
 
             final ContentResolver resolver = Collect.getInstance().getContentResolver();
             resolver.insert(InstanceColumns.CONTENT_URI, values);
