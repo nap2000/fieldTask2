@@ -192,7 +192,7 @@ public class MainListActivity extends FragmentActivity  {
 	    	TaskEntry entry = (TaskEntry) getListAdapter().getItem(position);
 
 	    	if(entry.type.equals("task")) {
-                if(entry.locationTrigger != null) {
+                if(entry.locationTrigger != null && entry.locationTrigger.length() > 0) {
                     Toast.makeText(
                             tabsActivity,
                             getString(R.string.smap_must_start_from_nfc),
