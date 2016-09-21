@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -155,7 +156,13 @@ public final class ExternalDataUtil {
                     // we can only add only the appropriate by querying the xPathFuncExpr.id.name
                     evaluationContext.addFunctionHandler(new ExternalDataHandlerSearch(externalDataManager, displayColumns, value, imageColumn));
 
+
                     Object eval = xPathFuncExpr.eval(formInstance, evaluationContext);
+                    // Smap Start
+                    if (eval.getClass().isAssignableFrom(Vector.class)) {
+                        eval = new ArrayList((Vector) eval);
+                    }
+                    // Smap end
                     if (eval.getClass().isAssignableFrom(ArrayList.class)) {
                        @SuppressWarnings("unchecked")
                      List<SelectChoice> dynamicChoices = (ArrayList<SelectChoice>) eval;
