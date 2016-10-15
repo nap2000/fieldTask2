@@ -19,14 +19,10 @@
  */
 package org.smap.smapTask.android.loaders;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import org.odk.collect.android.application.Collect;
-import org.smap.smapTask.android.provider.TraceProviderAPI.TraceColumns;
 import org.smap.smapTask.android.utilities.TraceUtilities;
 import org.smap.smapTask.android.utilities.Utilities;
 

@@ -16,12 +16,10 @@ package org.odk.collect.android.tasks;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -128,20 +126,26 @@ public class DownloadFormsTask extends
                 // do not download additional forms.
                 break;
             } catch (Exception e) {
-                Log.e(t, e.getMessage());
+                String msg = e.getMessage();
+                if ( msg == null ) {
+                  msg = e.toString();
+                }
+                Log.e(t, msg);
 
                 if (e.getCause() != null) {
-                    message += e.getCause().getMessage();
-                } else {
-                    message += e.getMessage();
+                  msg = e.getCause().getMessage();
+                  if ( msg == null ) {
+                    msg = e.getCause().toString();
+                  }
                 }
+                message += msg;
             }
 
             if (!isCancelled() && message.length() == 0 && fileResult != null) {
                 // install everything
                 UriResult uriResult = null;
                 try {
-                    uriResult = findExistingOrCreateNewUri(fileResult.getFile(), STFileUtils.getSource(fd.downloadUrl), fd.tasks_only);
+                    uriResult = findExistingOrCreateNewUri(fileResult.getFile(), STFileUtils.getSource(fd.downloadUrl), fd.tasks_only);   // smap add source
                     Log.w(t, "Form uri = " + uriResult.getUri() + ", isNew = " + uriResult.isNew());
 
                     // move the media files in the media folder
@@ -205,9 +209,8 @@ public class DownloadFormsTask extends
             FileUtils.deleteAndReport(fileOnCancel);
         }
 
-        Log.w(t, "Purging media path: " + tempMediaPath);
-        if(tempMediaPath != null) {
-            FileUtils.purgeMediaPath(tempMediaPath);
+        if ( tempMediaPath != null ) {
+        	FileUtils.purgeMediaPath(tempMediaPath);
         }
     }
 

@@ -14,21 +14,16 @@
 
 package org.smap.smapTask.android.adapters;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import android.content.Context;
+import android.database.DataSetObserver;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import org.odk.collect.android.logic.FormDetails;
 
-import android.app.Activity;
-import android.content.Context;
-import android.database.DataSetObserver;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
+import java.util.ArrayList;
 
 public class FormDetailsAdapter implements SpinnerAdapter {
 

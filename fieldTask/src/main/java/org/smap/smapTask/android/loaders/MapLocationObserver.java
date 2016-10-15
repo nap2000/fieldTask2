@@ -11,6 +11,7 @@ import android.util.Log;
 
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.preferences.PreferencesActivity;
+import org.smap.smapTask.android.activities.MapsActivity;
 import org.smap.smapTask.android.fragments.MapFragment;
 
 
@@ -30,7 +31,7 @@ public MapLocationObserver(Context context, MapFragment map) {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-      Log.i("Maps Activity: ", "++++++++received refresh");
+      Log.i("Maps Activity: ", "++++++++received location change");
       mMap.setUserLocation(Collect.getInstance().getLocation(), settings.getBoolean(PreferencesActivity.KEY_STORE_USER_TRAIL, false));
   }
 }

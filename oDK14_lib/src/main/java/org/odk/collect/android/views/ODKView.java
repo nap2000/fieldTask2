@@ -71,7 +71,7 @@ public class ODKView extends ScrollView implements OnLongClickListener {
     public final static String FIELD_LIST = "field-list";
 
     public ODKView(Context context, final FormEntryPrompt[] questionPrompts,
-            FormEntryCaption[] groups, boolean advancingPage, boolean canUpdate) {
+            FormEntryCaption[] groups, boolean advancingPage, boolean canUpdate) {      // smap
         super(context);
 
         widgets = new ArrayList<QuestionWidget>();
@@ -448,6 +448,10 @@ public class ODKView extends ScrollView implements OnLongClickListener {
         for (QuestionWidget qw : widgets) {
             qw.cancelLongPress();
         }
+    }
+
+    public void stopAudio() {
+        widgets.get(0).stopAudio();
     }
 
 }

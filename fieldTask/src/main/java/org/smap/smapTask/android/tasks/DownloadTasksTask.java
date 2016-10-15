@@ -14,28 +14,20 @@
 
 package org.smap.smapTask.android.tasks;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimeZone;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
-import org.smap.smapTask.android.listeners.TaskDownloaderListener;
-import org.smap.smapTask.android.loaders.PointEntry;
-import org.smap.smapTask.android.taskModel.FormLocator;
-import org.smap.smapTask.android.taskModel.TaskCompletionInfo;
-import org.smap.smapTask.android.taskModel.TaskResponse;
-import org.smap.smapTask.android.utilities.ManageForm;
-import org.smap.smapTask.android.utilities.ManageForm.ManageFormDetails;
-import org.smap.smapTask.android.utilities.ManageFormResponse;
-import org.smap.smapTask.android.utilities.TraceUtilities;
-import org.smap.smapTask.android.utilities.Utilities;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -61,26 +53,29 @@ import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
 import org.odk.collect.android.tasks.DownloadFormsTask;
 import org.odk.collect.android.tasks.InstanceUploaderTask;
 import org.odk.collect.android.tasks.InstanceUploaderTask.Outcome;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonSyntaxException;
-
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
+import org.smap.smapTask.android.listeners.TaskDownloaderListener;
+import org.smap.smapTask.android.loaders.PointEntry;
 import org.smap.smapTask.android.loaders.TaskEntry;
+import org.smap.smapTask.android.taskModel.FormLocator;
+import org.smap.smapTask.android.taskModel.TaskCompletionInfo;
+import org.smap.smapTask.android.taskModel.TaskResponse;
+import org.smap.smapTask.android.utilities.ManageForm;
+import org.smap.smapTask.android.utilities.ManageForm.ManageFormDetails;
+import org.smap.smapTask.android.utilities.ManageFormResponse;
+import org.smap.smapTask.android.utilities.TraceUtilities;
+import org.smap.smapTask.android.utilities.Utilities;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Background task for downloading tasks 
@@ -237,7 +232,7 @@ public class DownloadTasksTask extends AsyncTask<Void, String, HashMap<String, S
                  * Submit any completed forms
                  */
                 Outcome submitOutcome = submitCompletedForms();
-                if(submitOutcome != null) {
+                if(submitOutcome != null && submitOutcome.mResults != null) {
                     for (String key : submitOutcome.mResults.keySet()) {
                         results.put(key, submitOutcome.mResults.get(key));
                     }
@@ -298,8 +293,10 @@ public class DownloadTasksTask extends AsyncTask<Void, String, HashMap<String, S
                  *  Delete any forms that are no longer accessible to the user
                  */
                 HashMap<FormDetails, String> outcome = synchroniseForms(tr.forms);
-                for (FormDetails key : outcome.keySet()) {
-                    results.put(key.formName, outcome.get(key));
+                if(outcome != null) {
+                    for (FormDetails key : outcome.keySet()) {
+                        results.put(key.formName, outcome.get(key));
+                    }
                 }
 
                 if(isCancelled()) { throw new CancelException("cancelled"); };		// Return if the user cancels

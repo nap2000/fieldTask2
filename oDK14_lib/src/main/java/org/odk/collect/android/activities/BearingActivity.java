@@ -27,6 +27,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import java.util.Locale;
+
 public class BearingActivity extends Activity implements SensorEventListener {
     private ProgressDialog mBearingDialog;
 
@@ -37,6 +39,7 @@ public class BearingActivity extends Activity implements SensorEventListener {
     private static float[] mAccelerometer = null;
     private static float[] mGeomagnetic = null;
 
+    private String mBearingDecimal = null;
     private String mBearing = null;
 
     @Override
@@ -105,6 +108,7 @@ public class BearingActivity extends Activity implements SensorEventListener {
                                 Collect.getInstance().getActivityLogger()
                                         .logInstanceAction(this, "cancelBearing", "cancel");
                                 mBearing = null;
+                                mBearingDecimal = null;
                                 finish();
                                 break;
                         }
@@ -124,10 +128,10 @@ public class BearingActivity extends Activity implements SensorEventListener {
     }
 
     private void returnBearing() {
-        if (mBearing != null) {
+        if (mBearingDecimal != null) {
             Intent i = new Intent();
             i.putExtra(
-                    FormEntryActivity.BEARING_RESULT, mBearing);
+                    FormEntryActivity.BEARING_RESULT, mBearingDecimal);
             setResult(RESULT_OK, i);
         }
         finish();
@@ -152,13 +156,14 @@ public class BearingActivity extends Activity implements SensorEventListener {
         }
 
         if (mAccelerometer != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-            boolean success = SensorManager.getRotationMatrix(R, I, mAccelerometer, mGeomagnetic);
+            float rot[] = new float[9];
+            float inclination[] = new float[9];
+            boolean success = SensorManager.getRotationMatrix(rot, inclination, mAccelerometer,
+                mGeomagnetic);
 
             if (success) {
                 float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
+                SensorManager.getOrientation(rot, orientation);
                 // at this point, orientation contains the azimuth(direction),
                 // pitch and roll values.
                 double azimuth = 180 * orientation[0] / Math.PI;
@@ -166,6 +171,7 @@ public class BearingActivity extends Activity implements SensorEventListener {
                 // double roll = 180 * orientation[2] / Math.PI;
                 double degrees = normalizeDegree(azimuth);
                 mBearing = String.format("%.3f", degrees);
+                mBearingDecimal = String.format(Locale.US, "%.3f", degrees);
                 String dir = "N";
                 if ((degrees > 0 && degrees <= 22.5) || degrees > 337.5) {
                     dir = "N";
@@ -184,7 +190,8 @@ public class BearingActivity extends Activity implements SensorEventListener {
                 } else if (degrees > 292.5 && degrees <= 337.5) {
                     dir = "NW";
                 }
-                mBearingDialog.setMessage("Dir: " + dir + " Bearing: " + mBearing);
+                mBearingDialog.setMessage(getString(R.string.direction, dir) +
+                    "\n" + getString(R.string.bearing, degrees));
 
             }
         }

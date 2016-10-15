@@ -14,11 +14,9 @@
 
 package org.smap.smapTask.android.listeners;
 
-import java.util.HashMap;
-
 import org.smap.smapTask.android.taskModel.UserDetail;
 
-import android.os.Bundle;
+import java.util.HashMap;
 
 /**
  * @author Nick Huynh (minqiang.huang@gmail.com)

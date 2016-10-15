@@ -11,13 +11,13 @@
 	<string-array
 		name="protocol_entry_values">
 		<item>@string/protocol_odk_default</item>
-		<item>@string/protocol_google</item>
+		<item>@string/protocol_google_sheets</item>
 		<item>@string/protocol_other</item>
 	</string-array>
 	<string-array
 		name="protocol_entries">
 		<item>@string/server_platform_odk_aggregate</item>
-		<item>@string/server_platform_google_forms</item>
+		<item>@string/server_platform_google_sheets</item>
 		<item>@string/server_platform_other</item>
 	</string-array>
 	<!-- DO NOT alter font_size_entry_values - used internally in preferences activity -->
@@ -59,5 +59,61 @@
 		name="constraint_behavior_entries">
 		<item>@string/constraint_behavior_on_swipe</item>
 		<item>@string/constraint_behavior_on_finalize</item>
+	</string-array>
+	<string-array translatable="false" name="form_processing_logic_entry_values">
+		<item>-1</item>
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+	</string-array>
+	<string-array name="form_processing_logic_entries">
+		<item>@string/form_processing_logic_recommended</item>
+		<item>@string/form_processing_logic_0</item>
+		<item>@string/form_processing_logic_1</item>
+		<item>@string/form_processing_logic_2</item>
+		<item>@string/form_processing_logic_3</item>
+	</string-array>
+	<string-array name="map_sdk_selector_entries">
+		<item>@string/google_maps_sdk</item>
+		<item>@string/openstreetmap_sdk</item>
+	</string-array>
+	<string-array translatable="false" name="map_sdk_selector_entry_values">
+		<item>google_maps</item>
+		<item>osmdroid</item>
+	</string-array>
+
+	<!-- Basemaps-->
+	<string-array translatable="false" name="map_google_basemap_selector_entry_values">
+		<item>streets</item>
+		<item>satellite</item>
+		<item>terrain‎</item>
+		<item>hybrid</item>
+	</string-array>
+	<string-array name="map_google_basemap_selector_entries">
+		<item>@string/streets</item>
+		<item>@string/satellite</item>
+		<item>@string/terrain</item>
+		<item>@string/hybrid</item>
+	</string-array>
+
+	<string-array translatable="false" name="map_osm_basemap_selector_entry_values">
+		<item>mapquest_streets</item>
+		<item>mapquest_satellite</item>
+	</string-array>
+	<string-array name="map_osm_basemap_selector_entries">
+		<item>@string/mapquest_streets</item>
+		<item>@string/mapquest_satellite</item>
+	</string-array>
+	<string-array name="delay_scale" translatable="false">
+		<item>1</item>
+		<item>5</item>
+		<item>10</item>
+		<item>20</item>
+		<item>30</item>
+	</string-array>
+	<string-array name="time_scale" translatable="false">
+		<item>Seconds</item>
+		<item>Minutes</item>
 	</string-array>
 </resources>

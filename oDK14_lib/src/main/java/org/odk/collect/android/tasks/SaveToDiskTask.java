@@ -13,7 +13,6 @@
  */
 
 package org.odk.collect.android.tasks;
-import org.odk.collect.android.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import java.io.RandomAccessFile;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.services.transport.payload.ByteArrayPayload;
 import org.javarosa.form.api.FormEntryController;
+import org.odk.collect.android.R;
 import org.odk.collect.android.application.Collect;
 import org.odk.collect.android.exception.EncryptionException;
 import org.odk.collect.android.listeners.FormSavedListener;
@@ -136,7 +136,7 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
     	}
 
         try {
-    	    exportData(mMarkCompleted, mCanUpdate);
+    	    exportData(mMarkCompleted, mCanUpdate);     // smap
 
             // attempt to remove any scratch file
             File shadowInstance = savepointFile(formController.getInstancePath());
@@ -145,7 +145,6 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
             }
 
             saveResult.setSaveResult(mSave ? SAVED_AND_EXIT : SAVED);
-
         } catch (Exception e) {
             Log.e(t, e.getMessage(), e);
 
@@ -156,17 +155,17 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
         return saveResult;
     }
 
-    private void updateInstanceDatabase(boolean incomplete, boolean canEditAfterCompleted, boolean canUpdate) {
+    private void updateInstanceDatabase(boolean incomplete, boolean canEditAfterCompleted, boolean canUpdate) {     // smap
 
-    	String source = null;
+    	String source = null;       // smap
         FormController formController = Collect.getInstance().getFormController();
 
         // Update the instance database...
         ContentValues values = new ContentValues();
-        if (canUpdate && mInstanceName != null) {
+        if (canUpdate && mInstanceName != null) {       // smap
             values.put(InstanceColumns.DISPLAY_NAME, mInstanceName);
         }
-        if(canUpdate) {
+        if(canUpdate) {     // smap only if you can update
             if (incomplete || !mMarkCompleted) {
                 values.put(InstanceColumns.STATUS, InstanceProviderAPI.STATUS_INCOMPLETE);
             } else {
@@ -312,7 +311,7 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
      * @param markCompleted
      * @return
      */
-    private void exportData(boolean markCompleted, boolean canUpdate) throws IOException, EncryptionException {
+    private void exportData(boolean markCompleted, boolean canUpdate) throws IOException, EncryptionException {     // smap
         FormController formController = Collect.getInstance().getFormController();
 
         publishProgress(Collect.getInstance().getString(R.string.survey_saving_collecting_message));
@@ -322,7 +321,7 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
         String instancePath = formController.getInstancePath().getAbsolutePath();
 
         publishProgress(Collect.getInstance().getString(R.string.survey_saving_saving_message));
-        if(canUpdate) {
+        if(canUpdate) {      // smap
             exportXmlFile(payload, instancePath);
         }
 
@@ -330,9 +329,9 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
         // Since we saved a reloadable instance, it is flagged as re-openable so that if any error
         // occurs during the packaging of the data for the server fails (e.g., encryption),
         // we can still reopen the filled-out form and re-save it at a later time.
-        updateInstanceDatabase(true, true, canUpdate);
+        updateInstanceDatabase(true, true, canUpdate);      // smap
 
-        if ( markCompleted && canUpdate ) {
+        if ( markCompleted && canUpdate ) {     // smap
             // now see if the packaging of the data for the server would make it
         	// non-reopenable (e.g., encryption or send an SMS or other fraction of the form).
             boolean canEditAfterCompleted = formController.isSubmissionEntireForm();
@@ -378,7 +377,7 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
             // 2. Overwrite the instanceXml with the submission.xml
             //    and remove the plaintext attachments if encrypting
 
-            updateInstanceDatabase(false, canEditAfterCompleted, canUpdate);
+            updateInstanceDatabase(false, canEditAfterCompleted, canUpdate);    // smap
 
 	        if (  !canEditAfterCompleted ) {
 	            // AT THIS POINT, there is no going back.  We are committed

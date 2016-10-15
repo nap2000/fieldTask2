@@ -24,7 +24,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/intermediates/classes/debug" />
     <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/debug" />
     <exclude-output />
@@ -76,13 +76,12 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/rs" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/annotations" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundles" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.1.32/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/lint" />
@@ -93,22 +92,31 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 23 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="opencsv-2.3" level="project" />
-    <orderEntry type="library" exported="" name="httpmime-4.0" level="project" />
+    <orderEntry type="library" exported="" name="google-api-client-xml-1.20.0" level="project" />
     <orderEntry type="library" exported="" name="commons-io-2.4" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
-    <orderEntry type="library" exported="" name="regexp-me" level="project" />
-    <orderEntry type="library" exported="" name="javarosa-libraries-2014-04-29" level="project" />
-    <orderEntry type="library" exported="" name="apache-mime4j-0.6" level="project" />
-    <orderEntry type="library" exported="" name="kxml3" level="project" />
-    <orderEntry type="library" exported="" name="joda-time-2.0" level="project" />
-    <orderEntry type="library" exported="" name="httpclientandroidlib-4.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-21.0.0" level="project" />
-    <orderEntry type="module" module-name="playservices" exported="" />
-    <orderEntry type="library" exported="" name="effects-Google Inc.:Google APIs:19" level="project" />
-    <orderEntry type="library" exported="" name="usb-Google Inc.:Google APIs:19" level="project" />
-    <orderEntry type="library" exported="" name="maps-Google Inc.:Google APIs:19" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-android-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.6.2" level="project" />
+    <orderEntry type="library" exported="" name="google-api-client-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="joda-time-2.9.3" level="project" />
+    <orderEntry type="library" exported="" name="osmbonuspack_v4.6" level="project" />
+    <orderEntry type="library" exported="" name="gdata-core-1.0" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-android-1.6.1-RC1" level="project" />
+    <orderEntry type="library" exported="" name="google-api-client-android-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="kxml2-2.3.0" level="project" />
+    <orderEntry type="library" exported="" name="google-oauth-client-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-4.1.32" level="project" />
+    <orderEntry type="library" exported="" name="gdata-spreadsheet-3.0" level="project" />
+    <orderEntry type="library" exported="" name="google-api-services-drive-v2-rev113-1.17.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="osmdroid-android-4.2" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="guava-11.0.2" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-xml-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-gson-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="javarosa-libraries-2016-04-21" level="project" />
+    <orderEntry type="library" exported="" name="httpclientandroidlib-4.5.2-1" level="project" />
   </component>
 </module>

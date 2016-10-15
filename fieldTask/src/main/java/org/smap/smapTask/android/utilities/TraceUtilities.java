@@ -20,10 +20,9 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 
+import org.odk.collect.android.application.Collect;
 import org.smap.smapTask.android.loaders.PointEntry;
 import org.smap.smapTask.android.provider.TraceProviderAPI.TraceColumns;
-
-import org.odk.collect.android.application.Collect;
 
 import java.util.ArrayList;
 

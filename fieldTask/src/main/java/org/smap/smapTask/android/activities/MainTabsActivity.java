@@ -20,33 +20,6 @@
 
 package org.smap.smapTask.android.activities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.odk.collect.android.activities.FormDownloadList;
-import org.odk.collect.android.activities.FormEntryActivity;
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.listeners.FormDownloaderListener;
-import org.odk.collect.android.listeners.InstanceUploaderListener;
-import org.odk.collect.android.listeners.NFCListener;
-import org.odk.collect.android.logic.FormDetails;
-import org.odk.collect.android.preferences.AdminPreferencesActivity;
-import org.odk.collect.android.preferences.PreferencesActivity;
-import org.odk.collect.android.provider.FormsProviderAPI;
-import org.odk.collect.android.provider.InstanceProviderAPI;
-import org.odk.collect.android.tasks.NdefReaderTask;
-import org.odk.collect.android.utilities.CompatibilityUtils;
-import org.smap.smapTask.android.R;
-import org.smap.smapTask.android.listeners.TaskDownloaderListener;
-import org.smap.smapTask.android.loaders.TaskEntry;
-import org.smap.smapTask.android.taskModel.NfcTrigger;
-import org.smap.smapTask.android.tasks.DownloadTasksTask;
-import org.smap.smapTask.android.utilities.ManageForm;
-import org.smap.smapTask.android.utilities.Utilities;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -64,6 +37,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -83,7 +57,31 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.nfc.NfcAdapter;	// NFC
+import org.odk.collect.android.activities.FormDownloadList;
+import org.odk.collect.android.activities.FormEntryActivity;
+import org.odk.collect.android.application.Collect;
+import org.odk.collect.android.listeners.FormDownloaderListener;
+import org.odk.collect.android.listeners.InstanceUploaderListener;
+import org.odk.collect.android.listeners.NFCListener;
+import org.odk.collect.android.logic.FormDetails;
+import org.odk.collect.android.preferences.AdminPreferencesActivity;
+import org.odk.collect.android.preferences.PreferencesActivity;
+import org.odk.collect.android.provider.InstanceProviderAPI;
+import org.odk.collect.android.tasks.NdefReaderTask;
+import org.odk.collect.android.utilities.CompatibilityUtils;
+import org.smap.smapTask.android.R;
+import org.smap.smapTask.android.listeners.TaskDownloaderListener;
+import org.smap.smapTask.android.loaders.TaskEntry;
+import org.smap.smapTask.android.taskModel.NfcTrigger;
+import org.smap.smapTask.android.tasks.DownloadTasksTask;
+import org.smap.smapTask.android.utilities.ManageForm;
+import org.smap.smapTask.android.utilities.Utilities;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class MainTabsActivity extends TabActivity implements 
 		TaskDownloaderListener,
@@ -130,7 +128,7 @@ public class MainTabsActivity extends TabActivity implements
     private MainTabsListener listener = null;
     boolean listenerRegistered = false;
     private static List<TaskEntry> mTasks = null;
-    private static List<TaskEntry> mMapTasks = null;
+    //private static List<TaskEntry> mMapTasks = null;  Disable map tab
     private static SharedPreferences settings = null;
     private TabHost tabHost = null;
     
@@ -756,10 +754,11 @@ public class MainTabsActivity extends TabActivity implements
 
     /*
      * Get the tasks shown on the map
-     */
+     * Disable map tab
     public List<TaskEntry> getMapTasks() {
         return mMapTasks;
     }
+    */
 
     /*
      * Manage location triggers
@@ -770,9 +769,9 @@ public class MainTabsActivity extends TabActivity implements
         ArrayList<NfcTrigger> triggers = null;
 
         if(map) {
-            mMapTasks = data;
-            nfcTriggersMap = new ArrayList<NfcTrigger> ();
-            triggers = nfcTriggersMap;
+            // mMapTasks = data;    Disable map tab
+            // nfcTriggersMap = new ArrayList<NfcTrigger> ();
+            // triggers = nfcTriggersMap;
         } else {
             mTasks = data;
             nfcTriggersList = new ArrayList<NfcTrigger> ();
@@ -906,13 +905,12 @@ public class MainTabsActivity extends TabActivity implements
                 }
             } else if (intent.getAction().equals("startMapTask")) {
 
-                int position =  intent.getIntExtra("position", -1);
-                if(position >= 0) {
-                    TaskEntry entry = (TaskEntry) mMapTasks.get(position);
-
-                    mActivity.completeTask(entry);
-
-                }
+                // Disable map tab
+                // int position =  intent.getIntExtra("position", -1);
+                //if(position >= 0) {
+                //    TaskEntry entry = (TaskEntry) mMapTasks.get(position);
+                //    mActivity.completeTask(entry);
+                //}
             }
         }
     }

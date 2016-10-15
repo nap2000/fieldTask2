@@ -124,7 +124,6 @@ public class FormChooserList extends ListActivity implements DiskSyncListener {
     	long idFormsTable = ((SimpleCursorAdapter) getListAdapter()).getItemId(position);
         Uri formUri = ContentUris.withAppendedId(FormsColumns.CONTENT_URI, idFormsTable);
 
-        Log.i("onListItemClick", formUri.toString());
 		Collect.getInstance().getActivityLogger().logAction(this, "onListItemClick", formUri.toString());
 
         String action = getIntent().getAction();

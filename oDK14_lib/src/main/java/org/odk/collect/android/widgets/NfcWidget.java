@@ -36,8 +36,7 @@ import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.odk.collect.android.R;
 import org.odk.collect.android.activities.FormEntryActivity;
-import org.odk.collect.android.activities.GeoPointMapActivity;
-import org.odk.collect.android.activities.GeoPointMapActivitySdk7;
+
 import org.odk.collect.android.activities.NFCActivity;
 import org.odk.collect.android.application.Collect;
 
@@ -57,7 +56,6 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 
 	public NfcWidget(Context context, FormEntryPrompt prompt) {
 		super(context, prompt);
-		setOrientation(LinearLayout.VERTICAL);
 
 		TableLayout.LayoutParams params = new TableLayout.LayoutParams();
 		params.setMargins(7, 5, 7, 5);
@@ -104,8 +102,13 @@ public class NfcWidget extends QuestionWidget implements IBinaryWidget {
 			mStringAnswer.setText(s);
 		}
 		// finish complex layout
-		addView(mGetNfcButton);
-		addView(mStringAnswer);
+		//addView(mGetNfcButton);
+		//addView(mStringAnswer);
+        LinearLayout answerLayout = new LinearLayout(getContext());
+        answerLayout.setOrientation(LinearLayout.VERTICAL);
+        answerLayout.addView(mGetNfcButton);
+        answerLayout.addView(mStringAnswer);
+        addAnswerView(answerLayout);
 	}
 
 	@Override

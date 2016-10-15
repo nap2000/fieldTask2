@@ -15,7 +15,7 @@
 package org.odk.collect.android.widgets;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.List;
 
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.IAnswerData;
@@ -76,7 +76,7 @@ public class GridWidget extends QuestionWidget {
     private static final int IMAGE_PADDING = 8;
     private static final int SCROLL_WIDTH = 16;
 
-    Vector<SelectChoice> mItems;
+    List<SelectChoice> mItems;
 
     // The possible select choices
     String[] choices;
@@ -158,7 +158,7 @@ public class GridWidget extends QuestionWidget {
             String audioURI =
             		prompt.getSpecialFormSelectChoiceText(sc, FormEntryCaption.TEXT_FORM_AUDIO);
             if ( audioURI != null) {
-            	audioHandlers[i] = new AudioHandler(prompt.getIndex(), sc.getValue(), audioURI);
+            	audioHandlers[i] = new AudioHandler(prompt.getIndex(), sc.getValue(), audioURI, mPlayer);
             } else {
             	audioHandlers[i] = null;
             }
@@ -294,7 +294,7 @@ public class GridWidget extends QuestionWidget {
                 for (int i = 0; i < selected.length; i++) {
                 	// if we have an audio handler, be sure audio is stopped.
                 	if ( selected[i] && (audioHandlers[i] != null)) {
-                		audioHandlers[i].stopPlaying();
+                		stopAudio();
                 	}
                     selected[i] = false;
                     if (imageViews[i] != null) {
@@ -335,7 +335,7 @@ public class GridWidget extends QuestionWidget {
         // Use the custom image adapter and initialize the grid view
         ImageAdapter ia = new ImageAdapter(getContext(), choices);
         gridview.setAdapter(ia);
-        addView(gridview,  new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        addAnswerView(gridview);
     }
 
 
@@ -343,7 +343,7 @@ public class GridWidget extends QuestionWidget {
     public IAnswerData getAnswer() {
         for (int i = 0; i < choices.length; ++i) {
             if (selected[i]) {
-                SelectChoice sc = mItems.elementAt(i);
+                SelectChoice sc = mItems.get(i);
                 return new SelectOneData(new Selection(sc));
             }
         }

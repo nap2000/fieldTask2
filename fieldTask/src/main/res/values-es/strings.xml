@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
   <string name="change_password">Cambiar Constrasena</string>
   <string name="change_server_url">Cambiar Servidor</string>
   <string name="change_username">Cambiar Usuario</string>

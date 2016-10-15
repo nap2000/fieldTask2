@@ -14,26 +14,11 @@
 
 package org.smap.smapTask.android.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.smap.smapTask.android.loaders.TaskLoader;
-import org.smap.smapTask.android.loaders.TaskEntry;
-
-import org.smap.smapTask.android.adapters.TaskListArrayAdapter;
-import org.odk.collect.android.provider.FormsProviderAPI.FormsColumns;
-import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
-import org.odk.collect.android.activities.FormEntryActivity;
-import org.odk.collect.android.application.Collect;
-
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,11 +36,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.odk.collect.android.provider.FormsProviderAPI.FormsColumns;
 import org.smap.smapTask.android.R;
+import org.smap.smapTask.android.adapters.TaskListArrayAdapter;
+import org.smap.smapTask.android.loaders.TaskEntry;
+import org.smap.smapTask.android.loaders.TaskLoader;
 import org.smap.smapTask.android.receivers.LocationChangedReceiver;
 import org.smap.smapTask.android.utilities.Constants;
-import org.smap.smapTask.android.utilities.ManageForm;
-import org.smap.smapTask.android.utilities.Utilities;
+
+import java.util.List;
 
 /**
  * Responsible for displaying buttons to launch the major activities. Launches some activities based
@@ -96,7 +85,7 @@ public class MainListActivity extends FragmentActivity  {
 	 * Fragment to display list of tasks
 	 */
 	 public static class TaskListFragment extends ListFragment implements
-     		LoaderManager.LoaderCallbacks<List<TaskEntry>> { 
+     		LoaderManager.LoaderCallbacks<List<TaskEntry>> {
 	
 		private static final int TASK_LOADER_ID = 1;
 		

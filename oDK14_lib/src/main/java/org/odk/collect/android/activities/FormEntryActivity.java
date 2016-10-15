@@ -14,45 +14,6 @@
 
 package org.odk.collect.android.activities;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-
-import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.form.api.FormEntryCaption;
-import org.javarosa.form.api.FormEntryController;
-import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.model.xform.XFormsModule;
-import org.odk.collect.android.R;
-import org.odk.collect.android.application.Collect;
-import org.odk.collect.android.database.TraceUtilities;
-import org.odk.collect.android.exception.JavaRosaException;
-import org.odk.collect.android.listeners.AdvanceToNextListener;
-import org.odk.collect.android.listeners.FormLoaderListener;
-import org.odk.collect.android.listeners.FormSavedListener;
-import org.odk.collect.android.listeners.SavePointListener;
-import org.odk.collect.android.logic.FormController;
-import org.odk.collect.android.logic.FormController.FailedConstraint;
-import org.odk.collect.android.logic.PropertyManager;
-import org.odk.collect.android.preferences.AdminPreferencesActivity;
-import org.odk.collect.android.preferences.PreferencesActivity;
-import org.odk.collect.android.provider.FormsProviderAPI.FormsColumns;
-import org.odk.collect.android.provider.InstanceProviderAPI;
-import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
-import org.odk.collect.android.tasks.FormLoaderTask;
-import org.odk.collect.android.tasks.SavePointTask;
-import org.odk.collect.android.tasks.SaveResult;
-import org.odk.collect.android.tasks.SaveToDiskTask;
-import org.odk.collect.android.utilities.CompatibilityUtils;
-import org.odk.collect.android.utilities.FileUtils;
-import org.odk.collect.android.utilities.MediaUtils;
-import org.odk.collect.android.views.ODKView;
-import org.odk.collect.android.widgets.QuestionWidget;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -66,9 +27,9 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.location.Location;               // smap
+import android.location.LocationListener;       // smap
+import android.location.LocationManager;        // smap
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -104,6 +65,44 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.javarosa.core.model.FormIndex;
+import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.instance.TreeElement;
+import org.javarosa.form.api.FormEntryCaption;
+import org.javarosa.form.api.FormEntryController;
+import org.javarosa.form.api.FormEntryPrompt;
+import org.odk.collect.android.R;
+import org.odk.collect.android.application.Collect;
+import org.odk.collect.android.exception.JavaRosaException;
+import org.odk.collect.android.listeners.AdvanceToNextListener;
+import org.odk.collect.android.listeners.FormLoaderListener;
+import org.odk.collect.android.listeners.FormSavedListener;
+import org.odk.collect.android.listeners.SavePointListener;
+import org.odk.collect.android.logic.FormController;
+import org.odk.collect.android.logic.FormController.FailedConstraint;
+import org.odk.collect.android.preferences.AdminPreferencesActivity;
+import org.odk.collect.android.preferences.PreferencesActivity;
+import org.odk.collect.android.provider.FormsProviderAPI.FormsColumns;
+import org.odk.collect.android.provider.InstanceProviderAPI;
+import org.odk.collect.android.provider.InstanceProviderAPI.InstanceColumns;
+import org.odk.collect.android.tasks.FormLoaderTask;
+import org.odk.collect.android.tasks.SavePointTask;
+import org.odk.collect.android.tasks.SaveResult;
+import org.odk.collect.android.tasks.SaveToDiskTask;
+import org.odk.collect.android.utilities.CompatibilityUtils;
+import org.odk.collect.android.utilities.FileUtils;
+import org.odk.collect.android.utilities.MediaUtils;
+import org.odk.collect.android.views.ODKView;
+import org.odk.collect.android.widgets.QuestionWidget;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * FormEntryActivity is responsible for displaying questions, animating
@@ -148,12 +147,16 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 	public static final int ALIGNED_IMAGE = 16;
 	public static final int BEARING_CAPTURE = 17;
     public static final int EX_GROUP_CAPTURE = 18;
-    public static final int NFC_CAPTURE = 19;           // smap
+    public static final int OSM_CAPTURE = 19;
+    public static final int GEOSHAPE_CAPTURE = 20;
+    public static final int GEOTRACE_CAPTURE = 21;
+    public static final int NFC_CAPTURE = 22;   // smap
 
 	// Extra returned from gp activity
 	public static final String LOCATION_RESULT = "LOCATION_RESULT";
 	public static final String BEARING_RESULT = "BEARING_RESULT";
-
+    public static final String GEOSHAPE_RESULTS ="GEOSHAPE_RESULTS";
+    public static final String GEOTRACE_RESULTS ="GEOTRACE_RESULTS";
     public static final String NFC_RESULT = "NFC_RESULT";   // smap
 
 	public static final String KEY_INSTANCES = "instances";
@@ -179,6 +182,9 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 	public static final String KEY_XPATH = "xpath";
 	public static final String KEY_XPATH_WAITING_FOR_DATA = "xpathwaiting";
 
+	// Tracks whether we are autosaving
+	public static final String KEY_AUTO_SAVED = "autosaved";
+
 	private static final int MENU_LANGUAGES = Menu.FIRST;
 	private static final int MENU_HIERARCHY_VIEW = Menu.FIRST + 1;
 	private static final int MENU_SAVE = Menu.FIRST + 2;
@@ -187,6 +193,8 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 
 	private static final int PROGRESS_DIALOG = 1;
 	private static final int SAVING_DIALOG = 2;
+
+	private boolean mAutoSaved;
 
 	// Random ID
 	private static final int DELETE_REPEAT = 654321;
@@ -275,17 +283,11 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			}
 		});
 
-		// Load JavaRosa modules. needed to restore forms.
-		new XFormsModule().registerModule();
-
-		// needed to override rms property manager
-		org.javarosa.core.services.PropertyManager
-				.setPropertyManager(new PropertyManager(getApplicationContext()));
-
 		String startingXPath = null;
 		String waitingXPath = null;
 		String instancePath = null;
 		Boolean newForm = true;
+		mAutoSaved = false;
 		if (savedInstanceState != null) {
 			if (savedInstanceState.containsKey(KEY_FORMPATH)) {
 				mFormPath = savedInstanceState.getString(KEY_FORMPATH);
@@ -308,6 +310,9 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			if (savedInstanceState.containsKey(KEY_ERROR)) {
 				mErrorMessage = savedInstanceState.getString(KEY_ERROR);
 			}
+            if (savedInstanceState.containsKey(KEY_AUTO_SAVED)) {
+                mAutoSaved = savedInstanceState.getBoolean(KEY_AUTO_SAVED);
+            }
             //-------- SMAP Start ---------
             if (savedInstanceState.containsKey(KEY_TASK)) {
                 mTaskId = savedInstanceState.getLong(KEY_TASK);
@@ -523,7 +528,6 @@ public class FormEntryActivity extends Activity implements AnimationListener,
                 mTaskId = intent.getLongExtra(KEY_TASK, -1);	         // smap
                 mSurveyNotes = intent.getStringExtra(KEY_SURVEY_NOTES);  // smap
                 mCanUpdate = intent.getBooleanExtra(KEY_CAN_UPDATE, true);  // smap
-                Log.i("FormEntryActivity", "Got survey notes: " + mSurveyNotes);
 				mFormLoaderTask = new FormLoaderTask(instancePath, null, null);
 				Collect.getInstance().getActivityLogger()
 						.logAction(this, "formLoaded", mFormPath);
@@ -568,6 +572,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 		}
 		outState.putBoolean(NEWFORM, false);
 		outState.putString(KEY_ERROR, mErrorMessage);
+        outState.putBoolean(KEY_AUTO_SAVED, mAutoSaved);
         outState.putLong(KEY_TASK, mTaskId);	//-------- SMAP
 	}
 
@@ -603,6 +608,11 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 		case BARCODE_CAPTURE:
 			String sb = intent.getStringExtra("SCAN_RESULT");
 			((ODKView) mCurrentView).setBinaryData(sb);
+			saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
+			break;
+		case OSM_CAPTURE:
+			String osmFileName = intent.getStringExtra("OSM_FILE_NAME");
+			((ODKView) mCurrentView).setBinaryData(osmFileName);
 			saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
 			break;
 		case EX_STRING_CAPTURE:
@@ -724,6 +734,17 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			((ODKView) mCurrentView).setBinaryData(sl);
 			saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
 			break;
+        case GEOSHAPE_CAPTURE:
+            //String ls = intent.getStringExtra(GEOSHAPE_RESULTS);
+            String gshr = intent.getStringExtra(GEOSHAPE_RESULTS);
+            ((ODKView) mCurrentView).setBinaryData(gshr);
+            saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
+            break;
+        case GEOTRACE_CAPTURE:
+            String traceExtra = intent.getStringExtra(GEOTRACE_RESULTS);
+            ((ODKView) mCurrentView).setBinaryData(traceExtra);
+            saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
+            break;
         case NFC_CAPTURE:       // smap
             String nfcId = intent.getStringExtra(NFC_RESULT);
             ((ODKView) mCurrentView).setBinaryData(nfcId);
@@ -783,9 +804,9 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 		super.onCreateOptionsMenu(menu);
 
 		CompatibilityUtils.setShowAsAction(
-                menu.add(0, MENU_SAVE, 0, R.string.save_all_answers).setIcon(
-                        android.R.drawable.ic_menu_save),
-                MenuItem.SHOW_AS_ACTION_IF_ROOM);
+				menu.add(0, MENU_SAVE, 0, R.string.save_all_answers).setIcon(
+						android.R.drawable.ic_menu_save),
+				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		CompatibilityUtils.setShowAsAction(
 				menu.add(0, MENU_HIERARCHY_VIEW, 0, R.string.view_hierarchy)
@@ -884,7 +905,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			Intent pref = new Intent(this, PreferencesActivity.class);
 			startActivity(pref);
 			return true;
-        case MENU_COMMENT:
+        case MENU_COMMENT:              // smap
         Collect.getInstance()
                 .getActivityLogger()
                 .logInstanceAction(this, "onOptionsItemSelected",
@@ -1168,7 +1189,6 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 				TextView sa = (TextView) endView
 						.findViewById(R.id.save_form_as);
 				// sa.setVisibility(View.VISIBLE);				// smap
-				saveName = formController.getFormTitle();
 				saveAs.setText(saveName);
 				saveAs.setEnabled(true);
 				// saveAs.setVisibility(View.VISIBLE);				// smap
@@ -1237,7 +1257,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 				FormEntryCaption[] groups = formController
 						.getGroupsForCurrentIndex();
 				odkv = new ODKView(this, formController.getQuestionPrompts(),
-						groups, advancingPage, formController.getCanUpdate());
+						groups, advancingPage, formController.getCanUpdate());   // smap pass parameter indicating if view is updatable
 				Log.i(t,
 						"created view for group "
 								+ (groups.length > 0 ? groups[groups.length - 1]
@@ -1422,12 +1442,15 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 					R.anim.push_left_in);
 			mOutAnimation = AnimationUtils.loadAnimation(this,
 					R.anim.push_left_out);
+			// if animation is left or right then it was a swipe, and we want to re-save on entry
+			mAutoSaved = false;
 			break;
 		case LEFT:
 			mInAnimation = AnimationUtils.loadAnimation(this,
 					R.anim.push_right_in);
 			mOutAnimation = AnimationUtils.loadAnimation(this,
 					R.anim.push_right_out);
+			mAutoSaved = false;
 			break;
 		case FADE:
 			mInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -1479,8 +1502,24 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			break;
 		}
 
-		Collect.getInstance().getActivityLogger()
-				.logInstanceAction(this, "showView", logString);
+        Collect.getInstance().getActivityLogger().logInstanceAction(this, "showView", logString);
+
+        FormController formController = Collect.getInstance().getFormController();
+        if (formController.getEvent() == FormEntryController.EVENT_QUESTION
+                || formController.getEvent() == FormEntryController.EVENT_GROUP
+                || formController.getEvent() == FormEntryController.EVENT_REPEAT) {
+            FormEntryPrompt[] prompts = Collect.getInstance().getFormController()
+                    .getQuestionPrompts();
+            for (FormEntryPrompt p : prompts) {
+                List<TreeElement> attrs = p.getBindAttributes();
+                for (int i = 0; i < attrs.size(); i++) {
+                    if (!mAutoSaved && "saveIncomplete".equals(attrs.get(i).getName())) {
+                        saveDataToDisk(false, false, null, false);
+                        mAutoSaved = true;
+                    }
+                }
+            }
+        }
 	}
 
 	// Hopefully someday we can use managed dialogs when the bugs are fixed
@@ -1604,7 +1643,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 						refreshCurrentView();
 					}
 					break;
-				case DialogInterface.BUTTON_NEGATIVE: // no, no repeat
+				case DialogInterface. BUTTON_NEGATIVE: // no, no repeat
 					Collect.getInstance()
 							.getActivityLogger()
 							.logInstanceAction(this, "createRepeatDialog",
@@ -1738,7 +1777,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 					formController.deleteRepeat();
 					showPreviousView();
 					break;
-				case DialogInterface.BUTTON_NEGATIVE: // no
+				case DialogInterface. BUTTON_NEGATIVE: // no
 					Collect.getInstance()
 							.getActivityLogger()
 							.logInstanceAction(this,
@@ -1760,14 +1799,22 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 	 * isntancs as complete. If updatedSaveName is non-null, the instances
 	 * content provider is updated with the new name
 	 */
-	private boolean saveDataToDisk(boolean exit, boolean complete,
-			String updatedSaveName) {
-		// save current answer
-		if (!saveAnswersForCurrentScreen(complete)) {
-			Toast.makeText(this, getString(R.string.data_saved_error),
-					Toast.LENGTH_SHORT).show();
-			return false;
-		}
+    // by default, save the current screen
+    private boolean saveDataToDisk(boolean exit, boolean complete, String updatedSaveName) {
+        return saveDataToDisk(exit, complete, updatedSaveName, true);
+    }
+
+    // but if you want save in the background, can't be current screen
+    private boolean saveDataToDisk(boolean exit, boolean complete, String updatedSaveName,
+            boolean current) {
+        // save current answer
+        if (current) {
+            if (!saveAnswersForCurrentScreen(complete)) {
+                Toast.makeText(this, getString(R.string.data_saved_error), Toast.LENGTH_SHORT)
+                        .show();
+                return false;
+            }
+        }
 
         // Smap start
         String surveyNotes = null;
@@ -1781,21 +1828,29 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 		    mSaveToDiskTask = new SaveToDiskTask(getIntent().getData(), exit,
 					complete, updatedSaveName, mTaskId, mFormPath, surveyNotes, mCanUpdate); 	// SMAP added mTaskId, mFormPath, surveyNotes
 	    	mSaveToDiskTask.setFormSavedListener(this);
-		    showDialog(SAVING_DIALOG);
+            mAutoSaved = true;
+            showDialog(SAVING_DIALOG);
             // show dialog before we execute...
-		    mSaveToDiskTask.execute();
+            mSaveToDiskTask.execute();
         }
 
-		return true;
-	}
+        return true;
+    }
 
 	/**
 	 * Create a dialog with options to save and exit, save, or quit without
 	 * saving
 	 */
 	private void createQuitDialog() {
-		FormController formController = Collect.getInstance()
-				.getFormController();
+	   String title;
+	   {
+		   FormController formController = Collect.getInstance().getFormController();
+		   title = (formController == null) ? null : formController.getFormTitle();
+		   if ( title == null ) {
+		      title = "<no form loaded>";
+		   }
+	   }
+
 		String[] items;
 		if (mAdminPreferences.getBoolean(AdminPreferencesActivity.KEY_SAVE_MID,
 				true)) {
@@ -1812,8 +1867,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 		mAlertDialog = new AlertDialog.Builder(this)
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setTitle(
-						getString(R.string.quit_application,
-								formController.getFormTitle()))
+						getString(R.string.quit_application, title))
 				.setNeutralButton(getString(R.string.do_not_exit),
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -1986,7 +2040,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 					clearAnswer(qw);
 					saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
 					break;
-				case DialogInterface.BUTTON_NEGATIVE: // no
+				case DialogInterface. BUTTON_NEGATIVE: // no
 					Collect.getInstance()
 							.getActivityLogger()
 							.logInstanceAction(this, "createClearDialog",
@@ -2137,21 +2191,6 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			mProgressDialog.setTitle(getString(R.string.saving_form));
 			mProgressDialog.setMessage(getString(R.string.please_wait));
 			mProgressDialog.setIndeterminate(true);
-			mProgressDialog.setCancelable(false);
-			mProgressDialog.setButton(getString(R.string.cancel),
-					cancelSavingButtonListener);
-			mProgressDialog.setButton(getString(R.string.cancel_saving_form),
-					cancelSavingButtonListener);
-            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-					Collect.getInstance()
-					.getActivityLogger()
-					.logInstanceAction(this,
-							"onCreateDialog.SAVING_DIALOG", "OnCancelListener");
-                    cancelSaveToDiskTask();
-                }
-            });
             mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
@@ -2199,6 +2238,11 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 				saveAnswersForCurrentScreen(DO_NOT_EVALUATE_CONSTRAINTS);
 			}
 		}
+		if (mCurrentView != null && mCurrentView instanceof ODKView) {
+		    // stop audio if it's playing
+		    ((ODKView)mCurrentView).stopAudio();
+		}
+
 
 		super.onPause();
 	}
@@ -2261,7 +2305,6 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			mBackButton.setVisibility(View.GONE);
 			mNextButton.setVisibility(View.GONE);
 		}
-
 	}
 
 	@Override
@@ -2338,7 +2381,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			mStaleView = null;
 		}
 
-		if (mCurrentView instanceof ODKView) {
+		if (mCurrentView != null && mCurrentView instanceof ODKView) {
 			((ODKView) mCurrentView).setFocus(this);
 		}
 		mBeenSwiped = false;
@@ -2709,7 +2752,7 @@ public class FormEntryActivity extends Activity implements AnimationListener,
 			int xPixelLimit = (int) (dm.xdpi * .25);
 			int yPixelLimit = (int) (dm.ydpi * .25);
 
-			if (mCurrentView instanceof ODKView) {
+			if (mCurrentView != null && mCurrentView instanceof ODKView) {
 				if (((ODKView) mCurrentView).suppressFlingGesture(e1, e2,
 						velocityX, velocityY)) {
 					return false;

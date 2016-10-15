@@ -1,12 +1,12 @@
 package org.smap.smapTask.android.utilities;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import android.text.format.Time;
 
 import org.odk.collect.android.utilities.FileUtils;
 import org.odk.collect.android.utilities.STFileUtils;
 
-import android.text.format.Time;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public final class FileLogger {
 	
