@@ -47,10 +47,10 @@
     -->
 
     <permission
-          android:name="org.odk.collect.android.permission.MAPS_RECEIVE"
+          android:name="android.permission.MAPS_RECEIVE"
           android:protectionLevel="signature" />
-    <uses-permission android:name="org.odk.collect.android.permission.MAPS_RECEIVE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!--<uses-permission android:name="android.permission.MAPS_RECEIVE" /> smap creates duplicate permission if odkCollect installed -->
+    <uses-permission android:name="android.providers.gsf.permission.READ_GSERVICES" />
 
     <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="19" />
 

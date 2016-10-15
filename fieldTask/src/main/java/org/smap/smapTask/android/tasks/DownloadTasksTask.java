@@ -232,7 +232,7 @@ public class DownloadTasksTask extends AsyncTask<Void, String, HashMap<String, S
                  * Submit any completed forms
                  */
                 Outcome submitOutcome = submitCompletedForms();
-                if(submitOutcome != null) {
+                if(submitOutcome != null && submitOutcome.mResults != null) {
                     for (String key : submitOutcome.mResults.keySet()) {
                         results.put(key, submitOutcome.mResults.get(key));
                     }
@@ -293,8 +293,10 @@ public class DownloadTasksTask extends AsyncTask<Void, String, HashMap<String, S
                  *  Delete any forms that are no longer accessible to the user
                  */
                 HashMap<FormDetails, String> outcome = synchroniseForms(tr.forms);
-                for (FormDetails key : outcome.keySet()) {
-                    results.put(key.formName, outcome.get(key));
+                if(outcome != null) {
+                    for (FormDetails key : outcome.keySet()) {
+                        results.put(key.formName, outcome.get(key));
+                    }
                 }
 
                 if(isCancelled()) { throw new CancelException("cancelled"); };		// Return if the user cancels

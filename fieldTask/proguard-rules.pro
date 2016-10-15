@@ -15,4 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep class org.javarosa.**
+-keepattributes SourceFile,LineNumberTable
+-dontobfuscate
 -ignorewarnings
