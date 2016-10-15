@@ -114,13 +114,22 @@ public class TaskListArrayAdapter extends ArrayAdapter<TaskEntry> {
                 df.setTimeZone(TimeZone.getDefault());
                 line2 = df.format(theTime);
 
-                String addressText = KeyValueJsonFns.getValues(item.taskAddress);
-                if(addressText != null) {
-                    line2 += " " + addressText;
-                }
+                //String addressText = KeyValueJsonFns.getValues(item.taskAddress);
+                //if(addressText != null) {
+                //    line2 += " " + addressText;
+                //}
                 taskStartText.setText(line2);
 	    	}
     	}
+
+        TextView taskEndText = (TextView) view.findViewById(R.id.bottomtext);
+        if(taskEndText != null) {
+
+            String addressText = KeyValueJsonFns.getValues(item.taskAddress);
+            if(addressText != null) {
+                taskEndText.setText(addressText);
+            }
+        }
 
     	 
     	return view;

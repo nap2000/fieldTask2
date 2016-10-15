@@ -16,6 +16,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:ignore="MissingTranslation">
 
+    <string name="smap_task">Task</string>
     <string name="smap_accept_task">Accept the task</string>
     <string name="smap_accepted">: accepted. </string> 
     <string name="smap_cannot_accept">Unable to accept task</string> 

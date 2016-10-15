@@ -100,19 +100,6 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         mv = (MapView) view.findViewById(R.id.mapview);
         thisActvity = this;
-
-        // Create icons
-        userLocationIcon = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_userlocation)));
-        accepted = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_open)));
-        repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_repeat)));
-        rejected = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_reject)));
-        complete = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_done)));
-        submitted = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_submitted)));
-        triggered = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered)));
-        triggered_repeat = new Icon(new BitmapDrawable(getResources(),BitmapFactory.decodeResource(getResources(), drawable.ic_task_triggered_repeat)));
-        // Set Default Map Type
-        replaceMapView("OpenStreetMap");
-
         mv.onCreate(savedInstanceState);
         mv.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -269,8 +256,8 @@ public class MapFragment extends Fragment implements LoaderManager.LoaderCallbac
                 if (ll != null) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(ll)
-                            .title("task")
-                            .snippet("Some task");
+                            .title(getString(R.string.smap_task))
+                            .snippet(t.displayName);
 
                     markerOptions.icon(getIcon(t.taskStatus, t.repeat, t.locationTrigger != null));
 
