@@ -121,6 +121,8 @@ public final class STFileUtils {
         	} else {
         		source = url;
         	}
+        } else {
+            source = url;
         }
         // Only return the domain
         if(source.contains("/")) {
