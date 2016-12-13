@@ -527,6 +527,25 @@ public class InstanceUploaderTask extends AsyncTask<Long, Integer, InstanceUploa
     public Outcome doInBackground(Long... values) {		// smap make public
     	Outcome outcome = new Outcome();
 
+        // Start smap
+        String selection = InstanceColumns._ID + " IN (";
+        String[] selectionArgs = new String[(values == null) ? 0 : values.length];
+        if(values != null) {
+            for (int i = 0; i < values.length; i++) {
+                if(i > 0) {
+                    selection += ",";
+                }
+                selection += "?";
+                selectionArgs[i] = values[i].toString();
+            }
+        }
+        selection += ")";
+        Log.i(t, "Getting instances "  + selection);
+        // end smap
+
+        /*
+         * Commented out SMAP
+         *
         String selection = InstanceColumns._ID + "=?";
         String[] selectionArgs = new String[(values == null) ? 0 : values.length];
         if ( values != null ) {
@@ -537,6 +556,7 @@ public class InstanceUploaderTask extends AsyncTask<Long, Integer, InstanceUploa
 	            selectionArgs[i] = values[i].toString();
 	        }
         }
+        */
 
         String deviceId = new PropertyManager(Collect.getInstance().getApplicationContext())
         						.getSingularProperty(PropertyManager.OR_DEVICE_ID_PROPERTY);
