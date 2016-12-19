@@ -1,6 +1,7 @@
 [Smap fieldTask](http://www.smap.com.au) 
 ======
-[![Build Status](https://travis-ci.org/nap2000/fieldTask2.svg)](https://travis-ci.org/nap2000/fieldTask2)
+
+This was the second version of fieldTask.  It has now been replaced by version 4 and is being maintained in a new repository [https://github.com/smap-consulting/fieldTask4](https://github.com/smap-consulting/fieldTask4)
 
 fieldTask is an Android client for Smap Server that extends [odkCollect](http://opendatakit.org/use/collect/) with Task Management functionality. It depends on a modified
 version of odkCollect referenced as a library.
